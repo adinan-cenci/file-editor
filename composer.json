@@ -1,0 +1,39 @@
+{
+    "name": "adinan-cenci/file-editor",
+    "description": "A library to read and write files.", 
+    "type": "library", 
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adinan Cenci",
+            "email": "adinancenci@protonmail.com", 
+            "role": "developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.0"
+    }, 
+    "autoload": {
+        "psr-4": {
+            "AdinanCenci\\FileEditor\\": "src/",
+            "AdinanCenci\\FileEditor\\Exception\\": "src/Exception/",
+            "AdinanCenci\\FileEditor\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "scripts": {
+        "unit-tests": [
+            "mkdir -p tests/files",
+            "chmod 222 tests/exception-tests/non-readable-file.txt",
+            "chmod 444 tests/exception-tests/non-writable-directory",
+            "chmod 444 tests/exception-tests/non-writable-file.txt",
+            "./vendor/bin/phpunit tests",
+            "chmod 666 tests/exception-tests/non-readable-file.txt",
+            "chmod 777 tests/exception-tests/non-writable-directory",
+            "chmod 666 tests/exception-tests/non-writable-directory/*",
+            "chmod 666 tests/exception-tests/non-writable-file.txt"
+        ]
+    }
+}
