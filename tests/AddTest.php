@@ -25,10 +25,10 @@ final class AddTest extends Base
         $this->resetTest($fileName);
 
         $file = new File($fileName);
-        $file->addLines(['Vis Mystica', 'Hammer King'], true);
+        $file->addLines(['[16] Vis Mystica', '[17] Hammer King'], true);
 
         $lines = $file->getLines([16, 17]);
-        $this->assertEquals([16 => 'Vis Mystica', 17 => 'Hammer King'], $lines);
+        $this->assertEquals([16 => '[16] Vis Mystica', 17 => '[17] Hammer King'], $lines);
     }
 
     public function testAddMultipleLines() 

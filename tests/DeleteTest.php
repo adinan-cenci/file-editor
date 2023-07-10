@@ -16,7 +16,7 @@ final class DeleteTest extends Base
         $file->deleteLine(2);
 
         $third = $file->getLine(2);
-        $this->assertEquals('Savage Circus', $third);
+        $this->assertEquals('[ 3] Savage Circus', $third);
     }
 
     public function testDeleteMultipleLines() 
@@ -28,6 +28,6 @@ final class DeleteTest extends Base
         $file->deleteLines([5, 8]);
 
         $lines = $file->getLines([5, 8]);
-        $this->assertEquals([5 => 'Blind Guardian', 8 => ''], $lines);
+        $this->assertEquals([5 => '[ 6] Blind Guardian', 8 => '[10] '], $lines);
     }
 }

@@ -172,6 +172,29 @@ class File
     }
 
     /**
+     * @param bool $ignoreEmptyLine If true and the last line of the file is empty,
+     * it will return the second to last line.
+     * @return int
+     */
+    public function nameLastLine(bool $ignoreEmptyLine = false) : int
+    {
+        return self::getLastLine($this->fileName, $ignoreEmptyLine);
+    }
+
+    /**
+     * @param string $fileName
+     * @param bool $ignoreEmptyLine If true and the last line of the file is empty,
+     * it will return the second to last line.
+     * @return int
+     */
+    public static function getLastLine(string $fileName, bool $ignoreEmptyLine = false) : int
+    {
+        $lastLine = self::countLinesOnFile($fileName, $emptyLastLine);
+        $lastLine -= $ignoreEmptyLine && $emptyLastLine ? 1 : 0;
+        return $lastLine;
+    }
+
+    /**
      * @param string $fileName
      * @param bool $emptyLastLine Will turn true if the last line of the file is empty.
      * @return int The number of lines in the file.
@@ -194,28 +217,5 @@ class File
 
         fclose($handle);
         return $lineCount;
-    }
-
-    /**
-     * @param bool $ignoreEmptyLine If true and the last line of the file is empty,
-     * it will return the second to last line.
-     * @return int
-     */
-    public function nameLastLine(bool $ignoreEmptyLine = false) : int
-    {
-        return self::getLastLine($this->fileName, $ignoreEmptyLine);
-    }
-
-    /**
-     * @param string $fileName
-     * @param bool $ignoreEmptyLine If true and the last line of the file is empty,
-     * it will return the second to last line.
-     * @return int
-     */
-    public static function getLastLine(string $fileName, bool $ignoreEmptyLine = false) : int
-    {
-        $lastLine = self::countLinesOnFile($fileName, $emptyLastLine);
-        $lastLine -= $ignoreEmptyLine && $emptyLastLine ? 1 : 0;
-        return $lastLine;
     }
 }
