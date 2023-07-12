@@ -1,0 +1,25 @@
+[ 0] Avantasia
+[ 1] Centinela
+[ 2] Halloween
+[ 3] Savage Circus
+[ 4] Stratovarius
+[ 5] Luca Turilli
+[ 6] Blind Guardian
+[ 7] Firewind
+[ 8] Gamma ray
+[ 9] Nightwish
+[10] 
+[11] Rammstein
+[12] Running Wild
+[13] Shadowside
+[14] Follow the Cipher
+[15] Rhapsody of Fire
+
+
+
+
+
+
+
+
+last line

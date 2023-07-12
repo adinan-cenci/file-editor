@@ -13,10 +13,9 @@ final class CountLinesTest extends Base
         $this->resetTest($fileName, './tests/template-2.txt');
 
         $file = new File($fileName);
-        $numberOfLines = $file->countLines($lastLineIsEmpty);
+        $numberOfLines = $file->countLines();
 
         $this->assertEquals(25, $numberOfLines);
-        $this->assertTrue($lastLineIsEmpty);
     }
 
     public function testNameLastLine() 
@@ -39,6 +38,15 @@ final class CountLinesTest extends Base
         $lastLine = $file->nameLastLine(true);
 
         $this->assertEquals(16, $lastLine);
+
+
+        $fileName = 'tests/files/' . __FUNCTION__ . '2.txt';
+        $this->resetTest($fileName, './tests/template-3.txt');
+
+        $file = new File($fileName);
+        $lastLine = $file->nameLastLine(false);
+
+        $this->assertEquals(25, $lastLine);
     }
 
 }
