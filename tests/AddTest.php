@@ -31,6 +31,18 @@ final class AddTest extends Base
         $this->assertEquals([16 => '[16] Vis Mystica', 17 => '[17] Hammer King'], $lines);
     }
 
+    public function testAddMultipleLinesToTheEndOfTheFileWithBlankLinesAtTheEnd() 
+    {
+        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($fileName, './tests/template-2.txt');
+
+        $file = new File($fileName);
+        $file->addLines(['[16] Vis Mystica', '[17] Hammer King'], true);
+
+        $lines = $file->getLines([16, 17]);
+        $this->assertEquals([16 => '[16] Vis Mystica', 17 => '[17] Hammer King'], $lines);
+    }
+
     public function testAddMultipleLines() 
     {
         $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
@@ -60,7 +72,7 @@ final class AddTest extends Base
         $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
         $this->resetTest($fileName, '');
 
-        $file = new File($fileName, true);
+        $file = new File($fileName);
 
         $file->addLines([
             0 => 'Dreamtale',
@@ -72,5 +84,19 @@ final class AddTest extends Base
             0 => 'Dreamtale',
             10 => 'Unleash The Archers'
         ], $lines);
+    }
+
+    public function testCreateFromScratch() 
+    {
+        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
+        if (file_exists($fileName)) {
+            unlink($fileName);
+        }
+
+        $file = new File($fileName);
+
+        $file->addLines(['first', 'second', 'third', '', 'fifth']);
+
+        $this->assertTrue(true);
     }
 }
