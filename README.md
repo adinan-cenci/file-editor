@@ -1,4 +1,6 @@
 # File Editor
+A small library to edit and read files.
+
 This used to be part of my [json-lines](https://github.com/adinan-cenci/json-lines) library, but I decided to move to a separated repository for the sake of organization.
 
 <br><br>

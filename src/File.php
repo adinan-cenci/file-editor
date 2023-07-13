@@ -163,12 +163,12 @@ class File
     }
 
     /**
-     * @param bool $emptyLastLine Will turn true if the last line of the file is empty.
+     * @param bool $lastNonEmptyLine Will return the last non empty line in the file.
      * @return int The number of lines in the file.
      */
-    public function countLines(&$emptyLastLine = false) : int
+    public function countLines(&$lastNonEmptyLine = null) : int
     {
-        return self::countLinesOnFile($this->fileName, $emptyLastLine);
+        return self::countLinesOnFile($this->fileName, $lastNonEmptyLine);
     }
 
     /**
