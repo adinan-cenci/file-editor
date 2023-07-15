@@ -12,7 +12,7 @@ final class ReadTest extends Base
         $file = new File('tests/template.txt');
         $thirLine = $file->getLine(2);
 
-        $this->assertEquals('Halloween', $thirLine);
+        $this->assertEquals('[ 2] Halloween', $thirLine);
     }
 
     public function testGetNonExistentLine() 
@@ -28,6 +28,6 @@ final class ReadTest extends Base
         $file = new File('tests/template.txt');
         $lines = $file->getLines([0, 2, 4]);
 
-        $this->assertEquals([0 => 'Avantasia', 2 => 'Halloween', 4 => 'Stratovarius'], $lines);
+        $this->assertEquals([0 => '[ 0] Avantasia', 2 => '[ 2] Halloween', 4 => '[ 4] Stratovarius'], $lines);
     }
 }
