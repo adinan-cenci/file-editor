@@ -1,6 +1,8 @@
 <?php 
 namespace AdinanCenci\FileEditor;
 
+use AdinanCenci\FileEditor\Search\Search;
+
 /**
  * @property string $fileName
  * @property FileIterator $lines Iterator object to read the file line by line.
@@ -21,6 +23,9 @@ class File
             case 'lines':
                 return new FileIterator($this->fileName);
                 break;
+            case 'scrutinyLines':
+                return new ScrutinyIterator($this->fileName);
+                break;
             case 'fileName':
                 return $this->fileName;
                 break;
@@ -31,6 +36,11 @@ class File
 
         \trigger_error('Trying to retrieve unknown property ' . $propertyName, \E_USER_ERROR);
         return null;
+    }
+
+    public function search(string $operator = 'AND') : Search
+    {
+        return new Search($this, $operator);
     }
 
     /**
