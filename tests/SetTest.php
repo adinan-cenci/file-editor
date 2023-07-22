@@ -42,4 +42,18 @@ final class SetTest extends Base
         $lastLine = $file->getLine(25);
         $this->assertEquals('Elvenking', $lastLine);
     }
+
+    public function testCreateFileFromScratch() 
+    {
+        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
+        if (file_exists($fileName)) {
+            unlink($fileName);
+        }
+
+        $file = new File($fileName);
+        $file->setLine(0, 'Elvenking');
+
+        $firstLine = $file->getLine(0);
+        $this->assertEquals('Elvenking', $firstLine);
+    }
 }
