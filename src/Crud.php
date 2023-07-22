@@ -83,7 +83,9 @@ class Crud
 
     public function set(array $lines) : self
     {
-        $this->linesToDelete = array_merge($this->linesToDelete, array_keys($lines));
+        if (file_exists($this->fileName)) {
+            $this->linesToDelete = array_merge($this->linesToDelete, array_keys($lines));
+        }
         $this->linesToAdd += $lines;
 
         return $this;
