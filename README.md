@@ -133,7 +133,7 @@ $results = $search->find();
 ### Equals operator
 
 ```php
-$search->condition('lineNumber', 10, '=');
+$search->condition('position', 10, '=');
 // Will match the 11th line in the file.
 ```
 
@@ -170,16 +170,16 @@ It also supports "less than", "greater than", "less than or equal", "greater tha
 
 ```php
 $search
-  ->condition('lineNumber', 2022, '<')
-  ->condition('lineNumber', 1990, '>')
-  ->condition('lineNumber', 60, '<=')
-  ->condition('lineNumber', 18, '>=')
+  ->condition('position', 2022, '<')
+  ->condition('position', 1990, '>')
+  ->condition('position', 60, '<=')
+  ->condition('position', 18, '>=')
   ->condition('length', [10, 50], 'BETWEEN');
 ```
 
-### Negating operators
+### Negating conditions
 
-You may also negate the operators.
+You may also negate the conditions.
 
 ```php
 $search
@@ -191,14 +191,14 @@ $search
 
 ### Multiple conditions
 
-You may add multiple conditions to a search.
+You may add multiple conditions to a search object.
 By default all of the conditions must be met.
 
 ```php
 $search = $file->search();
 $search
   ->condition('content', 'Iron Maiden', '=')
-  ->condition('lineNumber', 2000, '<');
+  ->condition('position', 2000, '<');
 $results = $search->find();
 // Will match entries for Iron Maiden, before the line 2000.
 ```
@@ -214,7 +214,7 @@ $results = $search->find();
 // Will match entries for both Blind Guardian and Demons & Wizards.
 ```
 
-### Conditions groups
+### Condition groups
 
 You may also group conditons to create complex queries.
 
@@ -223,11 +223,11 @@ $search = $file->search('OR');
 
 $search->andConditionGroup()
   ->condition('content', 'Angra', '=')
-  ->condition('lineNumber', 2010, '<');
+  ->condition('position', 2010, '<');
 
 $search->andConditionGroup()
   ->condition('content', 'Almah', '=')
-  ->condition('lineNumber', 2010, '>');
+  ->condition('position', 2010, '>');
 
 $results = $search->find();
 // Will match entries for Angra from before line 2010 OR
