@@ -28,13 +28,13 @@ foreach ($file->lines as $lineN => $line) {
 
 ## Editing
 
-**Adding a line to the end of the file**
+### Adding a line to the end of the file
 
 ```php
 $file->addLine('foo-bar');
 ```
 
-**Adding a line to the middle of the file**
+### Adding a line to the middle of the file
 
 ```php
 $lineN = 5;
@@ -44,7 +44,7 @@ $file->addLine($line, $lineN);
 
 If the file has less than `$line` lines, the gap will be filled with blank lines.
 
-**Adding several lines to the end of the file**
+### Adding several lines to the end of the file
 
 ```php
 $lines = [
@@ -55,7 +55,7 @@ $lines = [
 $file->addLines($lines);
 ```
 
-**Adding several lines in the middle of the file**
+### Adding several lines in the middle of the file
 
 ```php
 $lines = [
@@ -66,7 +66,7 @@ $lines = [
 $file->addLines($lines, false);
 ```
 
-**Replacing an existing line**
+### Replacing an existing line
 
 ```php
 $lineN = 10;
@@ -76,7 +76,7 @@ $file->setLine($lineN, $line);
 
 The difference between `::addLine()` and `::setLine()` is that `::setLine()` will overwrite whatever is already present at `$line`. 
 
-**Setting multiple lines**
+### Replacing multiple lines
 
 ```php
 $lines = [
@@ -87,7 +87,7 @@ $lines = [
 $file->setLines($lines);
 ```
 
-**Retrieveing a single line**
+### Retrieveing a single line
 
 ```php
 $lineN = 10;
@@ -96,21 +96,21 @@ $line  = $file->getLine($lineN);
 
 Returns `null` if the line does not exist.
 
-**Retrieving multiple lines**
+### Retrieving multiple lines
 
 ```php
 $linesN = [0, 1, 2];
 $lines  = $file->getLines($linesN);
 ```
 
-**Deleting a single line**
+### Deleting a single line
 
 ```php
 $lineN = 10;
 $file->deleteLine($lineN);
 ```
 
-**Deleting multiple lines**
+### Deleting multiple lines
 
 ```php
 $linesN = [0, 1, 2];
@@ -130,14 +130,14 @@ $search->condition('content', 'value to compare', 'operator');
 $results = $search->find();
 ```
 
-**Equals operator**
+### Equals operator
 
 ```php
 $search->condition('lineNumber', 10, '=');
 // Will match the 11th line in the file.
 ```
 
-**In operator**
+### In operator
 
 ```php
 $search->condition('content', ['Iliad', ' Odyssey'], 'IN');
@@ -145,7 +145,7 @@ $search->condition('content', ['Iliad', ' Odyssey'], 'IN');
 // ( case insensitive ).
 ```
 
-**Like operator**
+### Like operator
 
 ```php
 $search->condition('content', 'foo', 'LIKE');
@@ -157,14 +157,14 @@ $search->condition('content', ['foo', 'bar'], 'LIKE');
 // "fool", "barrier", "barista" etc.
 ```
 
-**Regex operator**
+### Regex operator
 
 ```php
 $search->condition('content', '#\d{2}\/\d{2}\/\d{4}#', 'REGEX');
 // Will match lines against a regex expression.
 ```
 
-**Number comparison operators**
+### Number comparison operators
 
 It also supports "less than", "greater than", "less than or equal", "greater than or equal" and "between".
 
@@ -243,6 +243,8 @@ Use composer.
 ```
 composer require adinan-cenci/file-editor
 ```
+
+<br><br>
 
 ## License
 
