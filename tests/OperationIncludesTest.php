@@ -1,45 +1,46 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AdinanCenci\FileEditor\Tests;
 
-use AdinanCenci\FileEditor\Search\Operator\IncludeOperator;
+use AdinanCenci\FileEditor\Search\Operation\IncludeOperation;
 
-final class OperatorIncludesTest extends Base
+final class OperationIncludesTest extends Base
 {
-    public function testCompareStrings() 
+    public function testCompareStrings()
     {
         $actualValue = 'Highland Glory';
         $toCompare = 'Highland Glory';
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareStringsCaseInsensitive() 
+    public function testCompareStringsCaseInsensitive()
     {
         $actualValue = 'Highland Glory';
         $toCompare = 'HIGHLAND GLORY';
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareSubstring() 
+    public function testCompareSubstring()
     {
         $actualValue = 'Rhapsody of Fire';
         $toCompare = 'Rhapsody';
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertFalse($operator->matches());
     }
 
-    public function testCompareStringToArray() 
+    public function testCompareStringToArray()
     {
         $actualValue = 'Rhapsody of Fire';
         $toCompare = ['Rhapsody of Fire'];
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
@@ -48,88 +49,88 @@ final class OperatorIncludesTest extends Base
         $actualValue = null;
         $toCompare = '';
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
-    
-    public function testCompareIntegerToNumericalString() 
+
+    public function testCompareIntegerToNumericalString()
     {
         $actualValue = 0;
         $toCompare = '0';
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareZeroToEmptyString() 
+    public function testCompareZeroToEmptyString()
     {
         $actualValue = 0;
         $toCompare = '';
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertFalse($operator->matches());
     }
 
-    public function testCompareTrueToZeroString() 
+    public function testCompareTrueToZeroString()
     {
         $actualValue = true;
         $toCompare = '0';
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertFalse($operator->matches());
     }
 
-    public function testCompareTrueToOneString() 
+    public function testCompareTrueToOneString()
     {
         $actualValue = true;
         $toCompare = '1';
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareArrayToString() 
+    public function testCompareArrayToString()
     {
         $actualValue = ['Highland Glory'];
         $toCompare = 'Highland Glory';
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareArrayToStringCaseInsensitive() 
+    public function testCompareArrayToStringCaseInsensitive()
     {
         $actualValue = ['Highland Glory'];
         $toCompare = 'HIGHLAND GLORY';
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
-    
-    public function testCompareArrayToSubString() 
+
+    public function testCompareArrayToSubString()
     {
         $actualValue = ['Rhapsody of Fire'];
         $toCompare = 'Rhapsody';
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertFalse($operator->matches());
     }
 
-    public function testCompareArrayToArray() 
+    public function testCompareArrayToArray()
     {
         $actualValue = ['Highland Glory'];
         $toCompare = ['Highland Glory'];
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
-    
-    public function testCompareArrayToArrayCaseInsensitive() 
+
+    public function testCompareArrayToArrayCaseInsensitive()
     {
         $actualValue = ['Highland Glory'];
         $toCompare = ['HIGHLAND GLORY'];
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
@@ -138,7 +139,7 @@ final class OperatorIncludesTest extends Base
         $actualValue = ['Highland Glory', 'Gloryhammer'];
         $toCompare = ['Highland Glory'];
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
 
         //---------
@@ -146,7 +147,7 @@ final class OperatorIncludesTest extends Base
         $actualValue = ['Highland Glory'];
         $toCompare = ['Highland Glory', 'Gloryhammer'];
 
-        $operator = new IncludeOperator($actualValue, $toCompare);
+        $operator = new IncludeOperation($actualValue, $toCompare);
         $this->assertFalse($operator->matches());
     }
 }

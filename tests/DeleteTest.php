@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AdinanCenci\FileEditor\Tests;
@@ -7,7 +8,7 @@ use AdinanCenci\FileEditor\File;
 
 final class DeleteTest extends Base
 {
-    public function testDeleteSingleLine() 
+    public function testDeleteSingleLine()
     {
         $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
         $this->resetTest($fileName);
@@ -19,7 +20,7 @@ final class DeleteTest extends Base
         $this->assertEquals('[ 3] Savage Circus', $third);
     }
 
-    public function testDeleteMultipleLines() 
+    public function testDeleteMultipleLines()
     {
         $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
         $this->resetTest($fileName);

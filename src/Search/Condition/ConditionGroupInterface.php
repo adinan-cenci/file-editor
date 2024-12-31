@@ -1,32 +1,37 @@
-<?php 
+<?php
+
 namespace AdinanCenci\FileEditor\Search\Condition;
 
-interface ConditionGroupInterface extends ConditionInterface 
+interface ConditionGroupInterface extends ConditionInterface
 {
     /**
      * Add a new condition to this group.
-     * Returns self to chain in other methods.
-     * 
-     * @param array|string[] $property Either a simple string or an array of strings to reach nested properties.
+     *
+     * @param string[] $propertyPath
+     *   A path to extract the actual value during evaluation.
      * @param mixed $valueToCompare
-     * @param string $operatorId
+     *   The value for comparison.
+     * @param string $operator
+     *   The operator.
+     *
      * @return self
+     *   Returns self to chain in other methods.
      */
-    public function condition($property, $valueToCompare, string $operatorId = '=') : ConditionGroupInterface;
+    public function condition($propertyPath, $valueToCompare, string $operator = '='): ConditionGroupInterface;
 
     /**
      * Adds a new condition group ( nested inside this one ).
-     * Returns the new condition group.
-     * 
-     * @return ConditionGroupInterface
+     *
+     * @return AdinanCenci\FileEditor\Search\Condition\ConditionGroupInterface
+     *   Returns the new condition group.
      */
-    public function andConditionGroup() : ConditionGroupInterface;
+    public function andConditionGroup(): ConditionGroupInterface;
 
     /**
      * Adds a new condition group ( nested inside this one ).
-     * Returns the new condition group.
-     * 
-     * @return ConditionGroupInterface
+     *
+     * @return AdinanCenci\FileEditor\Search\Condition\ConditionGroupInterface
+     *   Returns the new condition group.
      */
-    public function orConditionGroup() : ConditionGroupInterface;
+    public function orConditionGroup(): ConditionGroupInterface;
 }

@@ -1,26 +1,50 @@
-<?php 
+<?php
+
 namespace AdinanCenci\FileEditor;
 
-class FileIterator implements \Iterator 
+class FileIterator implements \Iterator
 {
-    protected string $fileName   = '';
-    protected $handle            = null;
-    protected $currentContent    = null;
-    protected int $currentLine   = 0;
+    /**
+     * @var string
+     *   The absolute path to the file.
+     */
+    protected string $fileName = '';
 
-    public function __construct(string $fileName) 
+    /**
+     * @var resource
+     *   Resource to handle the file.
+     */
+    protected $handle = null;
+
+    /**
+     * @var null|string
+     *   Content of the current line.
+     */
+    protected $currentContent = null;
+
+    /**
+     * @var int
+     *   The current line.
+     */
+    protected int $currentLine = 0;
+
+    /**
+     * @param string $fileName
+     *   The absolute path to the file.
+     */
+    public function __construct(string $fileName)
     {
         $this->fileName = $fileName;
     }
 
-    public function __get($var) 
+    public function __get($var)
     {
         if ($var == 'currentLine') {
             return $this->currentLine;
         }
     }
 
-    public function current() 
+    public function current()
     {
         if (! $this->getHandle()) {
             return null;
@@ -29,12 +53,18 @@ class FileIterator implements \Iterator
         return $this->currentContent;
     }
 
-    public function key() 
+    /**
+     * \Iterator::key()
+     */
+    public function key()
     {
         return $this->currentLine;
     }
 
-    public function next() : void
+    /**
+     * \Iterator::next()
+     */
+    public function next(): void
     {
         if (! $this->getHandle()) {
             return;
@@ -48,7 +78,10 @@ class FileIterator implements \Iterator
         $this->currentLine++;
     }
 
-    public function rewind() : void
+    /**
+     * \Iterator::rewind()
+     */
+    public function rewind(): void
     {
         if (! $this->getHandle()) {
             return;
@@ -60,7 +93,10 @@ class FileIterator implements \Iterator
         $this->currentLine = 0;
     }
 
-    public function valid() : bool
+    /**
+     * \Iterator::valid()
+     */
+    public function valid(): bool
     {
         if (! $this->getHandle()) {
             return false;
@@ -75,7 +111,13 @@ class FileIterator implements \Iterator
         return $valid;
     }
 
-    protected function getHandle() 
+    /**
+     * Returns the file handle.
+     *
+     * @return resource
+     *   The file handle.
+     */
+    protected function getHandle()
     {
         if ($this->handle) {
             return $this->handle;

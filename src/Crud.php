@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace AdinanCenci\FileEditor;
 
 use AdinanCenci\FileEditor\Exception\DirectoryDoesNotExist;
@@ -7,48 +8,95 @@ use AdinanCenci\FileEditor\Exception\FileIsNotWritable;
 use AdinanCenci\FileEditor\Exception\FileDoesNotExist;
 use AdinanCenci\FileEditor\Exception\FileIsNotReadable;
 
-class Crud 
+/**
+ * Create, read, update, delete.
+ */
+class Crud
 {
+    /**
+     * @var string
+     *   Absolute path to the file.
+     */
     protected string $fileName = '';
+
+    /**
+     * @var AdinanCenci\FileEditor\FileIterator
+     *   Object to iterate through the file.
+     */
     protected FileIterator $iterator;
 
-    //-----------------------------
-
+    /**
+     * @var string
+     *   Name of the temporary file used to apply the changes to.
+     */
     protected string $tempFileName = '';
+
+    /**
+     * @var resource
+     *   File resource used to edit the temporary file.
+     */
     protected $tempFileResource = null;
+
+    /**
+     * @var int
+     *   Current line of the temporary file.
+     */
     protected int $tempFileCurrentLine = 0;
 
-    //-----------------------------
-
-    /** @var int $finalLine Property to controll the loop. */
+    /**
+     * @var int
+     *   Property to controll the loop.
+     */
     protected int $finalLine = 0;
 
-    /** @var int[] $linesToGet */
+    /**
+     * @var int[]
+     *   Lines to be retrieved.
+     */
     protected array $linesToGet = [];
 
-    /** @var int[] $linesToDelete */
+    /**
+     * @var int[]
+     *   Lines to be deleted.
+     */
     protected array $linesToDelete = [];
 
-    /** @var string[] $linesToAdd */
+    /**
+     * @var string[]
+     *   Lines to be added to the file indexed by their position.
+     */
     protected array $linesToAdd = [];
 
-    /** @var int $lastLineToBeAdd */
+    /**
+     * @var int
+     *   The last line to be added.
+     */
     protected $lastLineToBeAdd = 0;
 
-    /** @var (string|null)[] $linesRetrieved */
+    /**
+     * @var (string|null)[]
+     *   Lines retrieved.
+     */
     protected array $linesRetrieved = [];
 
-    /** @var int $lastLineToBeRetrieved */
+    /**
+     * @var int
+     *   The last line to be retrieved.
+     */
     protected $lastLineToBeRetrieved = 0;
 
-    //-----------------------------
-
-    public function __construct(string $fileName) 
+    /**
+     * Constructor.
+     *
+     * @param string $fileName
+     *   Absolute path to the file.
+     */
+    public function __construct(string $fileName)
     {
         $this->fileName = $fileName;
     }
 
-    public function __get(string $propertyName) 
+    public function __get(string $propertyName)
     {
         if ($propertyName == 'linesRetrieved') {
             return $this->linesRetrieved;
@@ -58,30 +106,52 @@ class Crud
     }
 
     /**
-     * @param int[] $lines An array of integers.
+     * Provices a list of lines to be retrieved from the file.
+     *
+     * @param int[] $lines
+     *   The lines we are aiming for.
      */
-    public function get(array $lines) : self
+    public function get(array $lines): self
     {
         $this->linesToGet = $lines;
         return $this;
     }
 
     /**
-     * @param int[] $lines An array of integers.
+     * Provides a list of lines to be deleted.
+     *
+     * @param int[] $lines
+     *   The lines we wish to delete.
      */
-    public function delete(array $lines) : self
+    public function delete(array $lines): self
     {
         $this->linesToDelete = array_merge($this->linesToDelete, $lines);
         return $this;
     }
 
-    public function add(array $lines) : self
+    /**
+     * Provides a list of lines to be added to the file.
+     *
+     * No content will be lost, just added.
+     *
+     * @param string[] $lines
+     *   New content to be added.
+     */
+    public function add(array $lines): self
     {
         $this->linesToAdd += $lines;
         return $this;
     }
 
-    public function set(array $lines) : self
+    /**
+     * Provides a list of lines to be set in the file.
+     *
+     * It will override existing content, unlike ::add().
+     *
+     * @param string[] $lines
+     *   Content to be set.
+     */
+    public function set(array $lines): self
     {
         if (file_exists($this->fileName)) {
             $this->linesToDelete = array_merge($this->linesToDelete, array_keys($lines));
@@ -91,24 +161,28 @@ class Crud
         return $this;
     }
 
-    public function commit() : self
+    /**
+     * Commits the changes.
+     */
+    public function commit(): self
     {
         $this->validate();
         $this->prepare();
         $this->iterateThroughExistingLines();
         $this->iterateThroughRemainingLines();
         $this->ended();
+
         return $this;
     }
 
     /**
-     * @throws FileIsNotWritable
-     * @throws FileDoesNotExist
-     * @throws FileIsNotReadable
-     * @throws DirectoryIsNotWritable
-     * @throws DirectoryDoesNotExist
+     * @throws AdinanCenci\FileEditor\Exception\FileIsNotWritable
+     * @throws AdinanCenci\FileEditor\Exception\FileDoesNotExist
+     * @throws AdinanCenci\FileEditor\Exception\FileIsNotReadable
+     * @throws AdinanCenci\FileEditor\Exception\DirectoryIsNotWritable
+     * @throws AdinanCenci\FileEditor\Exception\DirectoryDoesNotExist
      */
-    protected function validate() : void
+    protected function validate(): void
     {
         if ($this->linesToAdd) {
             $this->validateFileForWriting();
@@ -123,23 +197,24 @@ class Crud
         }
     }
 
-    protected function prepare() : void 
+    protected function prepare(): void
     {
         $this->iterator  = new FileIterator($this->fileName);
 
-        $this->lastLineToBeAdd = $this->linesToAdd 
+        $this->lastLineToBeAdd = $this->linesToAdd
             ? max(array_keys($this->linesToAdd))
             : 0;
 
-        $this->lastLineToBeRetrieved = $this->linesToGet 
+        $this->lastLineToBeRetrieved = $this->linesToGet
             ? max($this->linesToGet)
             : 0;
 
         $this->finalLine = $this->getNumberOfLinesToProcess();
         $this->tempFileCurrentLine = 0;
 
-        if ($this->linesToAdd || $this->linesToDelete) {
-            $this->tempFileName     = $this->tempFileName();
+        if (! $this->justReading()) {
+            // but editing.
+            $this->tempFileName     = $this->generateTempFileName();
             $this->tempFileResource = fopen($this->tempFileName, 'w');
         }
 
@@ -149,24 +224,48 @@ class Crud
         );
     }
 
-    protected function lineToDelete(int $line) : bool
+    /**
+     * Checks if $line should be deleted.
+     *
+     * @param int $line
+     *   The line in the file.
+     *
+     * @return bool
+     *   If it should be deleted.
+     */
+    protected function lineToDelete(int $line): bool
     {
         return in_array($line, $this->linesToDelete);
     }
 
-    protected function lineToAdd(int $line) :? string
+    /**
+     * Checks if $line is to be added to the file.
+     *
+     * @param int $line
+     *   The line in the file.
+     *
+     * @return string|null
+     *   The content to be added, null if there is not assigned to the $line.
+     */
+    protected function lineToAdd(int $line): ?string
     {
-        return isset($this->linesToAdd[$line]) 
-            ? $this->linesToAdd[$line] 
-            : NULL;
+        return isset($this->linesToAdd[$line])
+            ? $this->linesToAdd[$line]
+            : null;
     }
 
-    protected function justReading() : bool
+    /**
+     * Checks if we are just reading and not editing the file.
+     *
+     * @return bool
+     *   True if just reading.
+     */
+    protected function justReading(): bool
     {
         return empty($this->linesToDelete) && empty($this->linesToAdd);
     }
 
-    protected function iterateThroughExistingLines() : void
+    protected function iterateThroughExistingLines(): void
     {
         $this->iterator->rewind();
 
@@ -200,7 +299,7 @@ class Crud
         }
     }
 
-    protected function iterateThroughRemainingLines() : void
+    protected function iterateThroughRemainingLines(): void
     {
         if (! $this->tempFileResource) {
             return;
@@ -212,23 +311,27 @@ class Crud
         }
     }
 
-    protected function ended() : void
+    protected function ended(): void
     {
-        if ($this->tempFileName) {
-            fclose($this->tempFileResource);
-
-            if (file_exists($this->fileName)) {
-                unlink($this->fileName);
-            }
-
-            rename($this->tempFileName, $this->fileName);
+        if (!$this->tempFileName) {
+            return;
         }
+
+        fclose($this->tempFileResource);
+
+        if (file_exists($this->fileName)) {
+            unlink($this->fileName);
+        }
+
+        rename($this->tempFileName, $this->fileName);
     }
 
-    protected function getNumberOfLinesToProcess() : int
+    protected function getNumberOfLinesToProcess(): int
     {
-        if (empty($this->linesToAdd) && empty($this->linesToDelete)) {
-            return $this->linesToGet ? max($this->linesToGet) : 0;
+        if ($this->justReading()) {
+            return $this->linesToGet
+                ? max($this->linesToGet)
+                : 0;
         }
 
         return max(
@@ -238,14 +341,31 @@ class Crud
         );
     }
 
-    protected function writeToTempFile(string $newContent) : void
+    /**
+     * Writes content to the temporary file handle.
+     *
+     * @param string $newContent
+     *   String to be added to the tempfile.
+     */
+    protected function writeToTempFile(string $newContent): void
     {
         $newContent = $this->sanitizeLine($newContent);
         fwrite($this->tempFileResource, $newContent);
         $this->tempFileCurrentLine++;
     }
 
-    protected function sanitizeLine(string $content) : string
+    /**
+     * Sanitizes a string.
+     *
+     * Stripes it of line breaks, adds a single line break th the end of it.
+     *
+     * @param string $content
+     *   The content to be sanitized.
+     *
+     * @return string
+     *   The sanitized content.
+     */
+    protected function sanitizeLine(string $content): string
     {
         $string = (string) $content;
         $string = str_replace(["\n", "\r"], '', $string);
@@ -253,7 +373,12 @@ class Crud
         return $string;
     }
 
-    protected function validateFileForWriting() : void
+    /**
+     * Validates the file for writting.
+     *
+     * Throws exceptions depending on whatever problem we may be facing.
+     */
+    protected function validateFileForWriting(): void
     {
         $dir = dirname($this->fileName) . '/';
 
@@ -270,7 +395,12 @@ class Crud
         }
     }
 
-    protected function validateFileForReading() : void
+    /**
+     * Validates the file for reading.
+     *
+     * Throws exceptions depending on whatever problem we may be facing.
+     */
+    protected function validateFileForReading(): void
     {
         if (! file_exists($this->fileName)) {
             throw new FileDoesNotExist($this->fileName);
@@ -281,7 +411,12 @@ class Crud
         }
     }
 
-    protected function validateFileForDeleting() : void
+    /**
+     * Validates the file for deleting.
+     *
+     * Throws exceptions depending on whatever problem we may be facing.
+     */
+    protected function validateFileForDeleting(): void
     {
         if (! file_exists($this->fileName)) {
             throw new FileDoesNotExist($this->fileName);
@@ -292,12 +427,24 @@ class Crud
         }
     }
 
-    protected function tempFileName() : string
+    /**
+     * Generates a random name for temporary files.
+     *
+     * @return string
+     *   An absolute path.
+     */
+    protected function generateTempFileName(): string
     {
         return $this->getTempDir() . uniqid() . '.tmp';
     }
 
-    protected function getTempDir() : string
+    /**
+     * Returns the system's tempoary directory.
+     *
+     * @return string
+     *   Absolute path.
+     */
+    protected function getTempDir(): string
     {
         $tempDir = sys_get_temp_dir();
         return rtrim($tempDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;

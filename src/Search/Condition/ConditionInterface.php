@@ -1,13 +1,17 @@
-<?php 
+<?php
+
 namespace AdinanCenci\FileEditor\Search\Condition;
 
-interface ConditionInterface 
+interface ConditionInterface
 {
     /**
-     * Will determine if $data passes the condition based on its properties.
-     * 
+     * Will determine if $data meets the condition.
+     *
      * @param object|array $data
+     *   The data to be evaluated.
+     *
      * @return bool
+     *   Trues if it passes, false if it does not.
      */
-    public function evaluate($data) : bool;
+    public function evaluate($data): bool;
 }

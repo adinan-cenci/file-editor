@@ -1,32 +1,42 @@
-<?php 
+<?php
+
 namespace AdinanCenci\FileEditor;
 
 use AdinanCenci\FileEditor\Search\Search;
 
 /**
  * @property string $fileName
- * @property FileIterator $lines Iterator object to read the file line by line.
- * @property int $lineCount The number of lines in the file.
+ *   The filename.
+ * @property FileIterator $lines
+ *   Iterator object to read the file line by line.
+ * @property int $lineCount
+ *   The number of lines in the file.
  */
-class File 
+class File
 {
+    /**
+     * @var string
+     *   Absolute path to the file.
+     */
     protected string $fileName;
 
-    public function __construct(string $fileName) 
+    /**
+     * @param string $fileName
+     *   Absolute path to the file.
+     */
+    public function __construct(string $fileName)
     {
         $this->fileName = $fileName;
     }
 
-    public function __get(string $propertyName) 
+    public function __get(string $propertyName)
     {
         switch ($propertyName) {
             case 'lines':
                 return new FileIterator($this->fileName);
                 break;
-            case 'scrutinyLines':
-                return new ScrutinyIterator($this->fileName);
-                break;
             case 'fileName':
+            case 'filename':
                 return $this->fileName;
                 break;
             case 'lineCount':
@@ -38,36 +48,57 @@ class File
         return null;
     }
 
-    public function search(string $operator = 'AND') : Search
+    /**
+     * Instantiate a new search object.
+     *
+     * @param string $operator
+     *   The operator to with wich avaliate the search conditions:
+     *   "AND" or "OR".
+     *
+     * @return AdinanCenci\FileEditor\Search\Search
+     *   The search object.
+     */
+    public function search(string $operator = 'AND'): Search
     {
         return new Search($this, $operator);
     }
 
     /**
-     * If $line is not specified, $content will be added at the end of the file.
-     * 
+     * Adds a new line to the file.
+     *
+     * Nothing is overwritten.
+     *
      * @param string $content
+     *   The content of the new line.
      * @param int $line
-     * 
+     *   The position within the file, if not provided, $content will be added
+     *   to the end of the file.
+     *
      * @throws DirectoryDoesNotExist
      * @throws DirectoryIsNotWritable
      * @throws FileIsNotWritable
      */
-    public function addLine(string $content, int $line = -1) : void
+    public function addLine(string $content, int $line = -1): void
     {
         $this->addLines([$line => $content], $line < 0);
     }
 
     /**
-     * @param string[] $lines A numerical array: [ lineNumber => content ].
-     * @param bool $toTheEndOfTheFile If true, places the lines to the end of the file.
-     * If false, the placement will reflect the array's keys.
-     * 
+     * Adds multiple lines to the file.
+     *
+     * Nothing is overwritten.
+     *
+     * @param string[] $lines
+     *   A numerical array: [ lineNumber => content ].
+     * @param bool $toTheEndOfTheFile
+     *   If true, places the lines to the end of the file.
+     *   If false, the placement will reflect the array's keys.
+     *
      * @throws DirectoryDoesNotExist
      * @throws DirectoryIsNotWritable
      * @throws FileIsNotWritable
      */
-    public function addLines(array $lines, bool $toTheEndOfTheFile = true) : void
+    public function addLines(array $lines, bool $toTheEndOfTheFile = true): void
     {
         if ($toTheEndOfTheFile) {
             $lastLine = $this->nameLastLine(true);
@@ -81,29 +112,36 @@ class File
     }
 
     /**
-     * Will ovewrite the line if already set, unlike ::addLine()
-     * 
+     * Sets the content of the specified line.
+     *
+     * It will ovewrite the line if already set.
+     *
      * @param int $line
-     * @param string $content 
-     * 
+     *   The position within the file.
+     * @param string $content
+     *   The new content of the line.
+     *
      * @throws DirectoryDoesNotExist
      * @throws DirectoryIsNotWritable
      * @throws FileIsNotWritable
      */
-    public function setLine(int $line, string $content) : void
+    public function setLine(int $line, string $content): void
     {
         $this->setLines([$line => $content]);
     }
 
     /**
-     * Will ovewrite the lines if already set, unlike ::addLines()
-     * @param string[] $lines A numerical array: [ lineNumber => content ].
-     * 
+     * Sets the content of the specified lines.
+     *
+     * @param string[] $lines
+     *   A numerical array: [ lineNumber => content ].
+     *   Will ovewrite the lines if already set.
+     *
      * @throws DirectoryDoesNotExist
      * @throws DirectoryIsNotWritable
      * @throws FileIsNotWritable
      */
-    public function setLines(array $lines) : void
+    public function setLines(array $lines): void
     {
         $this->crud()
             ->set($lines)
@@ -111,26 +149,36 @@ class File
     }
 
     /**
+     * Retrieves the content of the specified line.
+     *
      * @param int $line
+     *   The position within the file.
+     *
      * @return string|null
-     * 
+     *   The contents of the line, null if there is nothing there.
+     *
      * @throws FileDoesNotExist
      * @throws FileIsNotReadable
      */
-    public function getLine(int $line) : ?string
+    public function getLine(int $line): ?string
     {
         $contents = $this->getLines([$line]);
         return $contents ? reset($contents) : null;
     }
 
     /**
+     * Returns the content of multiple lines at once.
+     *
      * @param int[] $lines
+     *   The positions within the file.
+     *
      * @return (string|null)[]
-     * 
+     *   The contents of the specified lines.
+     *
      * @throws FileDoesNotExist
      * @throws FileIsNotReadable
      */
-    public function getLines(array $lines) : array
+    public function getLines(array $lines): array
     {
         return $this->crud()
             ->get($lines)
@@ -139,23 +187,29 @@ class File
     }
 
     /**
+     * Deletes the specified line.
+     *
      * @param int $line
-     * 
+     *   The position within the file.
+     *
      * @throws FileDoesNotExist
      * @throws FileIsNotReadable
      */
-    public function deleteLine(int $line) : void
+    public function deleteLine(int $line): void
     {
         $this->deleteLines([$line]);
     }
 
     /**
+     * Delete multiple lines at once.
+     *
      * @param int[] $lines
-     * 
+     *   The positions within the file.
+     *
      * @throws FileDoesNotExist
      * @throws FileIsNotReadable
      */
-    public function deleteLines(array $lines) : void
+    public function deleteLines(array $lines): void
     {
         $this->crud()
             ->delete($lines)
@@ -164,49 +218,74 @@ class File
 
     /**
      * Returns an instance of the class used to edit the file.
-     * 
-     * @return Crud
+     *
+     * @return AdinanCenci\FileEditor\Crud
      */
-    public function crud() : Crud
+    public function crud(): Crud
     {
         return new Crud($this->fileName);
     }
 
     /**
-     * @param bool $lastNonEmptyLine Will return the last non empty line in the file.
-     * @return int The number of lines in the file.
+     * Counts how many lines the file has.
+     *
+     * @param int|null $lastNonEmptyLine
+     *   Will return the last non-empty line in the file.
+     *
+     * @return int
+     *   The number of lines in the file.
      */
-    public function countLines(&$lastNonEmptyLine = null) : int
+    public function countLines(&$lastNonEmptyLine = null): int
     {
         return self::countLinesOnFile($this->fileName, $lastNonEmptyLine);
     }
 
     /**
-     * @param bool $ignoreEmptyLines If true, the method will return the last non empty line.
+     * Returns the last line of the file.
+     *
+     * @param bool $ignoreEmptyLines
+     *   If true, the method will return the last non-empty line.
+     *
      * @return int
+     *   The last line.
      */
-    public function nameLastLine(bool $ignoreEmptyLines = false) : int
+    public function nameLastLine(bool $ignoreEmptyLines = false): int
     {
         return self::getLastLine($this->fileName, $ignoreEmptyLines);
     }
 
     /**
+     * Returns the last line of the specified file.
+     *
      * @param string $fileName
-     * @param bool $ignoreEmptyLines If true, the method will return the last non empty line.
+     *   Absolute path to the file.
+     * @param bool $ignoreEmptyLines
+     *   If true, the method will return the last non-empty line.
+     *
      * @return int
+     *   The last line.
      */
-    public static function getLastLine(string $fileName, bool $ignoreEmptyLines = false) : int
+    public static function getLastLine(string $fileName, bool $ignoreEmptyLines = false): int
     {
         $lastLine = self::countLinesOnFile($fileName, $lastNonEmptyLine);
-        return $ignoreEmptyLines && $lastNonEmptyLine !== null ? $lastNonEmptyLine : $lastLine;
+        return $ignoreEmptyLines && $lastNonEmptyLine !== null
+            ? $lastNonEmptyLine
+            : $lastLine;
     }
 
     /**
+     * Counts how many lines there is on a file.
+     *
      * @param string $fileName
-     * @param bool $lastNonEmptyLine Will return the last line that is not empty.
-     * @return int The actual number of lines in the file.
+     *   Absolute path to the file.
+     *
+     * @param null|int $lastNonEmptyLine
+     *   Will return the last line that is not empty.
+     *
+     * @return int
+     *   The number of lines in the file.
      */
-    public static function countLinesOnFile(string $fileName, &$lastNonEmptyLine = null) : int
+    public static function countLinesOnFile(string $fileName, &$lastNonEmptyLine = null): int
     {
         if (! file_exists($fileName)) {
             return 0;
@@ -217,13 +296,13 @@ class File
         $lastNonEmptyLine = null;
 
         $n = 0;
-        while(! feof($handle)){
+        while (! feof($handle)) {
             $line = fgets($handle, 4096);
             $lineCount += substr_count($line, PHP_EOL);
             $strlen = strlen(trim($line, "\n"));
             if ($strlen > 0) {
                 $lastNonEmptyLine = null;
-            } else if ($lastNonEmptyLine === null && $strlen == 0) {
+            } elseif ($lastNonEmptyLine === null && $strlen == 0) {
                 $lastNonEmptyLine = $n;
             }
             $n++;

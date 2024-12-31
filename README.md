@@ -6,9 +6,7 @@ This used to be part of my [json-lines](https://github.com/adinan-cenci/json-lin
 
 <br><br>
 
-## How to use it
-
-**Instantiating**
+## Instantiating
 
 ```php
 use AdinanCenci\FileEditor\File;
@@ -18,7 +16,7 @@ $file = new File('my-file.txt');
 
 <br><br>
 
-**Iterating**
+## Iterating
 
 ```php
 foreach ($file->lines as $lineN => $line) {
@@ -28,15 +26,15 @@ foreach ($file->lines as $lineN => $line) {
 
 <br><br>
 
-**Add a line to the end of the file**
+## Editing
+
+**Adding a line to the end of the file**
 
 ```php
 $file->addLine('foo-bar');
 ```
 
-<br><br>
-
-**Add a line to the middle of the file**
+**Adding a line to the middle of the file**
 
 ```php
 $lineN = 5;
@@ -46,9 +44,7 @@ $file->addLine($line, $lineN);
 
 If the file has less than `$line` lines, the gap will be filled with blank lines.
 
-<br><br>
-
-**Add several lines to the end of the file**
+**Adding several lines to the end of the file**
 
 ```php
 $lines = [
@@ -59,9 +55,7 @@ $lines = [
 $file->addLines($lines);
 ```
 
-<br><br>
-
-**Add several lines in the middle of the file**
+**Adding several lines in the middle of the file**
 
 ```php
 $lines = [
@@ -72,9 +66,7 @@ $lines = [
 $file->addLines($lines, false);
 ```
 
-<br><br>
-
-**Replace an existing line**
+**Replacing an existing line**
 
 ```php
 $lineN = 10;
@@ -84,9 +76,7 @@ $file->setLine($lineN, $line);
 
 The difference between `::addLine()` and `::setLine()` is that `::setLine()` will overwrite whatever is already present at `$line`. 
 
-<br><br>
-
-**Set multiple lines**
+**Setting multiple lines**
 
 ```php
 $lines = [
@@ -97,9 +87,7 @@ $lines = [
 $file->setLines($lines);
 ```
 
-<br><br>
-
-**Retrieve lines**
+**Retrieveing a single line**
 
 ```php
 $lineN = 10;
@@ -108,48 +96,39 @@ $line  = $file->getLine($lineN);
 
 Returns `null` if the line does not exist.
 
-<br><br>
-
-**Retrieve multiple objects**
+**Retrieving multiple lines**
 
 ```php
 $linesN = [0, 1, 2];
 $lines  = $file->getLines($linesN);
 ```
 
-<br><br>
-
-**Delete lines**
+**Deleting a single line**
 
 ```php
 $lineN = 10;
 $file->deleteLine($lineN);
 ```
 
-<br><br>
-
-**Delete multiple lines**
+**Deleting multiple lines**
 
 ```php
 $linesN = [0, 1, 2];
 $file->deleteLines($linesN);
 ```
-
 <br><br>
 
-## Search
+## Searching
 
 The library also provides a way to query the file.  
 Instantiate a new `Search` object, give it conditions and call the `::find()` method, 
-it will return an array of matching lines indexed by their line in the file.
+it will return an array of matching lines indexed by their position in the file.
 
 ```php
 $search = $file->search();
 $search->condition('content', 'value to compare', 'operator');
 $results = $search->find();
 ```
-
-<br><br>
 
 **Equals operator**
 
@@ -158,8 +137,6 @@ $search->condition('lineNumber', 10, '=');
 // Will match the 11th line in the file.
 ```
 
-<br><br>
-
 **In operator**
 
 ```php
@@ -167,8 +144,6 @@ $search->condition('content', ['Iliad', ' Odyssey'], 'IN');
 // Will match lines that match either "Iliad" or "Odyssey" 
 // ( case insensitive ).
 ```
-
-<br><br>
 
 **Like operator**
 
@@ -182,16 +157,12 @@ $search->condition('content', ['foo', 'bar'], 'LIKE');
 // "fool", "barrier", "barista" etc.
 ```
 
-<br><br>
-
 **Regex operator**
 
 ```php
 $search->condition('content', '#\d{2}\/\d{2}\/\d{4}#', 'REGEX');
 // Will match lines against a regex expression.
 ```
-
-<br><br>
 
 **Number comparison operators**
 
@@ -206,8 +177,6 @@ $search
   ->condition('length', [10, 50], 'BETWEEN');
 ```
 
-<br><br>
-
 ### Negating operators
 
 You may also negate the operators.
@@ -219,8 +188,6 @@ $search
   ->condition('length', [10, 50], 'NOT BETWEEN')
   ->condition('content', ['foo', 'bar'], 'UNLIKE');
 ```
-
-<br><br>
 
 ### Multiple conditions
 
@@ -247,8 +214,6 @@ $results = $search->find();
 // Will match entries for both Blind Guardian and Demons & Wizards.
 ```
 
-<br><br>
-
 ### Conditions groups
 
 You may also group conditons to create complex queries.
@@ -271,12 +236,6 @@ $results = $search->find();
 
 <br><br>
 
-## License
-
-MIT
-
-<br><br>
-
 ## How to install it
 
 Use composer.
@@ -284,3 +243,7 @@ Use composer.
 ```
 composer require adinan-cenci/file-editor
 ```
+
+## License
+
+MIT

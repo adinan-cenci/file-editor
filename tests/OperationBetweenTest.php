@@ -1,45 +1,46 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AdinanCenci\FileEditor\Tests;
 
-use AdinanCenci\FileEditor\Search\Operator\BetweenOperator;
+use AdinanCenci\FileEditor\Search\Operation\BetweenOperation;
 
-final class OperatorBetweenTest extends Base
+final class OperationBetweenTest extends Base
 {
-    public function testCompareValueInRange() 
+    public function testCompareValueInRange()
     {
         $actualValue = 5;
         $minMax = [0, 10];
 
-        $operator = new BetweenOperator($actualValue, $minMax);
+        $operator = new BetweenOperation($actualValue, $minMax);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareValueOutOfRange() 
+    public function testCompareValueOutOfRange()
     {
         $actualValue = 15;
         $minMax = [0, 10];
 
-        $operator = new BetweenOperator($actualValue, $minMax);
+        $operator = new BetweenOperation($actualValue, $minMax);
         $this->assertFalse($operator->matches());
     }
 
-    public function testDescendingRange() 
+    public function testDescendingRange()
     {
         $actualValue = 15;
         $minMax = [10, 0];
 
-        $operator = new BetweenOperator($actualValue, $minMax);
+        $operator = new BetweenOperation($actualValue, $minMax);
         $this->assertFalse($operator->matches());
     }
 
-    public function testInvalidRange() 
+    public function testInvalidRange()
     {
         $actualValue = 15;
         $minMax = ['foo', 'bar'];
 
         $this->expectException('InvalidArgumentException');
-        $operator = new BetweenOperator($actualValue, $minMax);
+        $operator = new BetweenOperation($actualValue, $minMax);
     }
 }

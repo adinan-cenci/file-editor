@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AdinanCenci\FileEditor\Tests;
@@ -7,7 +8,7 @@ use AdinanCenci\FileEditor\File;
 
 final class CrudTest extends Base
 {
-    public function testMultipleOperationsAtOnce() 
+    public function testMultipleOperationsAtOnce()
     {
         $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
         $this->resetTest($fileName);

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AdinanCenci\FileEditor\Tests;
@@ -7,7 +8,7 @@ use AdinanCenci\FileEditor\File;
 
 class SearchTest extends Base
 {
-    public function testSearchEqualsOperator() 
+    public function testSearchEqualsOperator()
     {
         $file = new File('./tests/template-search.txt');
         $search = $file->search();
@@ -25,7 +26,7 @@ class SearchTest extends Base
         $this->assertEquals(4, $lineN);
     }
 
-    public function testSearchGreaterThanOperator() 
+    public function testSearchGreaterThanOperator()
     {
         $file = new File('./tests/template-search.txt');
         $search = $file->search();
@@ -37,8 +38,7 @@ class SearchTest extends Base
         $this->assertEquals(2, count($results));
     }
 
-    
-    public function testSearchGreaterOrEqualToOperator() 
+    public function testSearchGreaterOrEqualToOperator()
     {
         $file = new File('./tests/template-search.txt');
         $search = $file->search();
@@ -50,7 +50,7 @@ class SearchTest extends Base
         $this->assertEquals(3, count($results));
     }
 
-    public function testSearchBetweenOperator() 
+    public function testSearchBetweenOperator()
     {
         $file = new File('./tests/template-search.txt');
         $search = $file->search();
@@ -62,7 +62,7 @@ class SearchTest extends Base
         $this->assertEquals([0, 1, 2], array_keys($results));
     }
 
-    public function testSearchIncludeOperator() 
+    public function testSearchIncludeOperator()
     {
         $file = new File('./tests/template-search.txt');
         $search = $file->search();
@@ -74,31 +74,31 @@ class SearchTest extends Base
         $this->assertEquals([0, 2, 4, 6], array_keys($results));
     }
 
-    public function testSearchLikeOperator() 
+    public function testSearchLikeOperator()
     {
         $file = new File('./tests/template-search.txt');
         $search = $file->search();
 
         $search->condition('content', 'Achaeans', 'LIKE');
 
-        $results = $search->find(); 
+        $results = $search->find();
 
         $this->assertEquals([0, 6, 7, 9, 11, 24, 31], array_keys($results));
     }
 
-    public function testSearchRegexOperator() 
+    public function testSearchRegexOperator()
     {
         $file = new File('./tests/template-search.txt');
         $search = $file->search();
 
         $search->condition('content', '#O god#', 'REGEX');
 
-        $results = $search->find(); 
+        $results = $search->find();
 
         $this->assertEquals([0, 17], array_keys($results));
     }
 
-    public function testSearchInvalidOperator() 
+    public function testSearchInvalidOperator()
     {
         $file = new File('./tests/template-search.txt');
         $search = $file->search();
@@ -109,7 +109,7 @@ class SearchTest extends Base
 
     //--------------------------
 
-    public function testAndSearchWithTwoConditions() 
+    public function testAndSearchWithTwoConditions()
     {
         $file = new File('./tests/template-search.txt');
         $search = $file->search();
@@ -124,7 +124,7 @@ class SearchTest extends Base
         $this->assertEquals(10, $keys[0]);
     }
 
-    public function testOrSearchWithTwoConditions() 
+    public function testOrSearchWithTwoConditions()
     {
         $file = new File('./tests/template-search.txt');
         $search = $file->search('OR');
@@ -138,7 +138,7 @@ class SearchTest extends Base
         $this->assertEquals([0, 2, 4, 5, 6, 8, 9, 10, 26, 30], array_keys($results));
     }
 
-    public function testOrSearchMultiLevelConditions() 
+    public function testOrSearchMultiLevelConditions()
     {
         $file = new File('./tests/template-search.txt');
         $search = $file->search('OR');

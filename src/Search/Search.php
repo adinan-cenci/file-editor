@@ -1,17 +1,36 @@
-<?php 
+<?php
+
 namespace AdinanCenci\FileEditor\Search;
 
 use AdinanCenci\FileEditor\File;
 use AdinanCenci\FileEditor\Search\Condition\ConditionGroupInterface;
 use AdinanCenci\FileEditor\Search\Condition\AndConditionGroup;
 use AdinanCenci\FileEditor\Search\Condition\OrConditionGroup;
+use AdinanCenci\FileEditor\Search\Iterator\MetadataIterator;
 
-class Search implements ConditionGroupInterface 
+class Search implements ConditionGroupInterface
 {
+    /**
+     * @var AdinanCenci\FileEditor\File
+     *   The file subject to this search.
+     */
     protected File $file;
+
+    /**
+     * @var AdinanCenci\FileEditor\Search\Condition\ConditionGroupInterface
+     *   The main condition group.
+     */
     protected ConditionGroupInterface $mainConditionGroup;
 
-    public function __construct(File $file, string $operator = 'AND') 
+    /**
+     * Constructor.
+     *
+     * @param AdinanCenci\FileEditor\File
+     *   The file subject to this search.
+     * @param string $operator
+     *   The logic operator: "AND" or "OR".
+     */
+    public function __construct(File $file, string $operator = 'AND')
     {
         $this->file = $file;
         $this->mainConditionGroup = $operator == 'OR'
@@ -20,50 +39,68 @@ class Search implements ConditionGroupInterface
     }
 
     /**
-     * It will iterate through the file and return the objects that match
-     * the specified criteria.
-     * @return array
+     * Find the results.
+     *
+     * It will iterate through the file and return the objects that match the
+     * specified criteria.
+     *
+     * @return string[]
+     *   The lines of the file that match the criteria, indexed by their
+     *   position in the file.
      */
-    public function find() : array
+    public function find(): array
+    {
+        $results = $this->search();
+        array_walk($results, function (&$item) {
+            $item = $item->content;
+        });
+
+        return $results;
+    }
+
+    public function search(): array
     {
         $results = [];
-        foreach ($this->file->scrutinyLines as $line => $object) {
+        $iterator = new MetadataIterator($this->file->fileName);
+
+        foreach ($iterator as $line => $object) {
             if ($object && $this->evaluate($object)) {
-                $results[ $line ] = $object->content;
+                $results[ $line ] = $object;
             }
         }
+
         return $results;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function evaluate($data) : bool
+    public function evaluate($data): bool
     {
         return $this->mainConditionGroup->evaluate($data);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function condition($property, $valueToCompare, string $operatorId = '=') : self
+    public function condition($propertyPath, $valueToCompare, string $operator = '='): self
     {
-        $this->mainConditionGroup->condition($property, $valueToCompare, $operatorId);
+        $this->mainConditionGroup->condition($propertyPath, $valueToCompare, $operator);
         return $this;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function andConditionGroup() : AndConditionGroup
+    public function andConditionGroup(): AndConditionGroup
     {
         return $this->mainConditionGroup->andConditionGroup();
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function orConditionGroup() : OrConditionGroup
+    public function orConditionGroup(): OrConditionGroup
     {
         return $this->mainConditionGroup->orConditionGroup();
     }

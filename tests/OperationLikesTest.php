@@ -1,18 +1,19 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AdinanCenci\FileEditor\Tests;
 
-use AdinanCenci\FileEditor\Search\Operator\LikeOperator;
+use AdinanCenci\FileEditor\Search\Operation\LikeOperation;
 
-final class OperatorLikesTest extends Base
+final class OperationLikesTest extends Base
 {
-    public function testCompareStrings() 
+    public function testCompareStrings()
     {
         $actualValue = 'Highland Glory';
         $toCompare = 'Highland Glory';
 
-        $operator = new LikeOperator($actualValue, $toCompare);
+        $operator = new LikeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
@@ -21,88 +22,88 @@ final class OperatorLikesTest extends Base
         $actualValue = 'Highland Glory';
         $toCompare = 'HIGHLAND GLORY';
 
-        $operator = new LikeOperator($actualValue, $toCompare);
+        $operator = new LikeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareSubstring() 
+    public function testCompareSubstring()
     {
         $actualValue = 'Highland Glory';
         $toCompare = 'glory';
 
-        $operator = new LikeOperator($actualValue, $toCompare);
+        $operator = new LikeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareStringToArray() 
+    public function testCompareStringToArray()
     {
         $actualValue = 'Highland Glory';
         $toCompare = ['glory'];
 
-        $operator = new LikeOperator($actualValue, $toCompare);
+        $operator = new LikeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareArrayToString() 
+    public function testCompareArrayToString()
     {
         $actualValue = ['Highland Glory'];
         $toCompare = 'Highland Glory';
 
-        $operator = new LikeOperator($actualValue, $toCompare);
+        $operator = new LikeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareArrayToStringCaseInsensitive() 
+    public function testCompareArrayToStringCaseInsensitive()
     {
         $actualValue = ['Highland Glory'];
         $toCompare = 'HIGHLAND GLORY';
 
-        $operator = new LikeOperator($actualValue, $toCompare);
+        $operator = new LikeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareArrayToSubstring() 
+    public function testCompareArrayToSubstring()
     {
         $actualValue = ['Highland Glory'];
         $toCompare = 'glory';
 
-        $operator = new LikeOperator($actualValue, $toCompare);
+        $operator = new LikeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareArrayToArray() 
+    public function testCompareArrayToArray()
     {
         $actualValue = ['Highland Glory'];
         $toCompare = ['Highland Glory'];
 
-        $operator = new LikeOperator($actualValue, $toCompare);
+        $operator = new LikeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareArrayToArraySubstring() 
+    public function testCompareArrayToArraySubstring()
     {
         $actualValue = ['Highland Glory'];
         $toCompare = ['Glory'];
 
-        $operator = new LikeOperator($actualValue, $toCompare);
+        $operator = new LikeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareArrayToArrayCaseInsensitive() 
+    public function testCompareArrayToArrayCaseInsensitive()
     {
         $actualValue = ['Highland Glory'];
         $toCompare = ['HIGHLAND GLORY'];
 
-        $operator = new LikeOperator($actualValue, $toCompare);
+        $operator = new LikeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareIntersectingArrays() 
+    public function testCompareIntersectingArrays()
     {
         $actualValue = ['Highland Glory', 'Gloryhammer'];
         $toCompare = ['Highland Glory'];
 
-        $operator = new LikeOperator($actualValue, $toCompare);
+        $operator = new LikeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
 
         //---------
@@ -110,7 +111,7 @@ final class OperatorLikesTest extends Base
         $actualValue = ['Highland Glory', 'Gloryhammer'];
         $toCompare = ['hammer'];
 
-        $operator = new LikeOperator($actualValue, $toCompare);
+        $operator = new LikeOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
 
         //---------
@@ -118,7 +119,7 @@ final class OperatorLikesTest extends Base
         $actualValue = ['Highland Glory'];
         $toCompare = ['Highland Glory', 'Gloryhammer'];
 
-        $operator = new LikeOperator($actualValue, $toCompare);
+        $operator = new LikeOperation($actualValue, $toCompare);
         $this->assertFalse($operator->matches());
     }
 }

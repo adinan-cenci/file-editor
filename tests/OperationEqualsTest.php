@@ -1,119 +1,120 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AdinanCenci\FileEditor\Tests;
 
-use AdinanCenci\FileEditor\Search\Operator\EqualOperator;
+use AdinanCenci\FileEditor\Search\Operation\EqualOperation;
 
-final class OperatorEqualsTest extends Base
+final class OperationEqualsTest extends Base
 {
     // STRINGS
-    public function testCompareStrings() 
+    public function testCompareStrings()
     {
         $actualValue = 'Highland Glory';
         $toCompare = 'Highland Glory';
 
-        $operator = new EqualOperator($actualValue, $toCompare);
+        $operator = new EqualOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareStringsCaseInsensitive() 
+    public function testCompareStringsCaseInsensitive()
     {
         $actualValue = 'Highland Glory';
         $toCompare = 'HIGHLAND GLORY';
 
-        $operator = new EqualOperator($actualValue, $toCompare);
+        $operator = new EqualOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareNullToEmptyString() 
+    public function testCompareNullToEmptyString()
     {
         $actualValue = null;
         $toCompare = '';
 
-        $operator = new EqualOperator($actualValue, $toCompare);
+        $operator = new EqualOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareFalseToEmptyString() 
+    public function testCompareFalseToEmptyString()
     {
         $actualValue = false;
         $toCompare = '';
 
-        $operator = new EqualOperator($actualValue, $toCompare);
+        $operator = new EqualOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareIntegerToNumericalString() 
+    public function testCompareIntegerToNumericalString()
     {
         $actualValue = 5;
         $toCompare = '5';
 
-        $operator = new EqualOperator($actualValue, $toCompare);
+        $operator = new EqualOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareZeroToEmptyString() 
+    public function testCompareZeroToEmptyString()
     {
         $actualValue = 0;
         $toCompare = '';
 
-        $operator = new EqualOperator($actualValue, $toCompare);
+        $operator = new EqualOperation($actualValue, $toCompare);
         $this->assertFalse($operator->matches());
     }
 
-    public function testCompareTrueToZeroString() 
+    public function testCompareTrueToZeroString()
     {
         $actualValue = true;
         $toCompare = '0';
 
-        $operator = new EqualOperator($actualValue, $toCompare);
+        $operator = new EqualOperation($actualValue, $toCompare);
         $this->assertFalse($operator->matches());
     }
 
-    public function testCompareTrueToOneString() 
+    public function testCompareTrueToOneString()
     {
         $actualValue = true;
         $toCompare = '1';
 
-        $operator = new EqualOperator($actualValue, $toCompare);
+        $operator = new EqualOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
     // ARRAYS
-    public function testCompareArrayToString() 
+    public function testCompareArrayToString()
     {
         $actualValue = ['Highland Glory'];
         $toCompare = 'Highland Glory';
 
-        $operator = new EqualOperator($actualValue, $toCompare);
+        $operator = new EqualOperation($actualValue, $toCompare);
         $this->assertFalse($operator->matches());
     }
 
-    public function testCompareArrayToArray() 
+    public function testCompareArrayToArray()
     {
         $actualValue = ['Highland Glory'];
         $toCompare = ['Highland Glory'];
 
-        $operator = new EqualOperator($actualValue, $toCompare);
+        $operator = new EqualOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareArrayToArrayCaseInsensitive() 
+    public function testCompareArrayToArrayCaseInsensitive()
     {
         $actualValue = ['Highland Glory'];
         $toCompare = ['HIGHLAND GLORY'];
 
-        $operator = new EqualOperator($actualValue, $toCompare);
+        $operator = new EqualOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareIntersectingArrays() 
+    public function testCompareIntersectingArrays()
     {
         $actualValue = ['Highland Glory', 'Gloryhammer'];
         $toCompare = ['Highland Glory'];
 
-        $operator = new EqualOperator($actualValue, $toCompare);
+        $operator = new EqualOperation($actualValue, $toCompare);
         $this->assertFalse($operator->matches());
 
         //----------------------------
@@ -121,25 +122,25 @@ final class OperatorEqualsTest extends Base
         $actualValue = ['Highland Glory'];
         $toCompare = ['Highland Glory', 'Gloryhammer'];
 
-        $operator = new EqualOperator($actualValue, $toCompare);
+        $operator = new EqualOperation($actualValue, $toCompare);
         $this->assertFalse($operator->matches());
     }
 
-    public function testCompareUnorderedNumericalArrays() 
+    public function testCompareUnorderedNumericalArrays()
     {
         $actualValue = ['Highland Glory', 'Gloryhammer'];
         $toCompare = ['Gloryhammer', 'Highland Glory'];
 
-        $operator = new EqualOperator($actualValue, $toCompare);
+        $operator = new EqualOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 
-    public function testCompareUnorderedAssociativeArrays() 
+    public function testCompareUnorderedAssociativeArrays()
     {
         $actualValue = ['first' => 'Highland Glory', 'second' => 'Gloryhammer'];
         $toCompare = ['second' => 'Gloryhammer', 'first' => 'Highland Glory'];
 
-        $operator = new EqualOperator($actualValue, $toCompare);
+        $operator = new EqualOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 }
