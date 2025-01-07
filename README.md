@@ -42,7 +42,7 @@ $line  = 'foo-bar';
 $file->addLine($line, $lineN);
 ```
 
-If the file has less than `$line` lines, the gap will be filled with blank lines.
+If the file has less than `$lineN` lines, the gap will be filled with empty lines.
 
 ### Adding several lines to the end of the file
 
@@ -74,7 +74,7 @@ $line  = 'foo-bar';
 $file->setLine($lineN, $line);
 ```
 
-The difference between `::addLine()` and `::setLine()` is that `::setLine()` will overwrite whatever is already present at `$line`. 
+The difference between `::addLine()` and `::setLine()` is that the latter will overwrite whatever is already present at `$lineN`. 
 
 ### Replacing multiple lines
 

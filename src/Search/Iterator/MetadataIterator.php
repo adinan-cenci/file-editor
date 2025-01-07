@@ -9,6 +9,9 @@ use AdinanCenci\FileEditor\FileIterator;
  */
 class MetadataIterator extends FileIterator implements \Iterator
 {
+    /**
+     * \Iterator::current()
+     */
     public function current()
     {
         if (! $this->getHandle()) {

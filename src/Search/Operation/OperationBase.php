@@ -108,7 +108,7 @@ abstract class OperationBase implements OperationInterface
 
     protected function invalidDataError(string $operatorName, string $expected, string $actual): string
     {
-        return 'Invalid data given to ' . $operatorName . ' operator, expected ' . 
+        return 'Invalid data given to ' . $operatorName . ' operator, expected ' .
         $expected . ( $actual ? (', ' . $actual . ' given.') : '' );
     }
 

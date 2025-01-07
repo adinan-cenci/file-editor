@@ -44,6 +44,9 @@ class FileIterator implements \Iterator
         }
     }
 
+    /**
+     * \Iterator::current()
+     */
     public function current()
     {
         if (! $this->getHandle()) {
