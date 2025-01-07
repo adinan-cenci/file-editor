@@ -1,6 +1,7 @@
 <?php
 namespace AdinanCenci\FileEditor\Search\Condition;
 
+use AdinanCenci\FileEditor\Search\Iterator\MetadataWrapperInterface;
 use AdinanCenci\FileEditor\Search\Operation\OperatorInterface;
 use AdinanCenci\FileEditor\Search\Operation\Equals;
 use AdinanCenci\FileEditor\Search\Operation\Includes;
@@ -48,9 +49,9 @@ class Condition implements ConditionInterface
     /**
      * {@inheritDoc}
      */
-    public function evaluate($data): bool
+    public function evaluate(MetadataWrapperInterface $data): bool
     {
-        $actualValue = $this->getValue($data, $this->propertyPath);
+        $actualValue = $data->getValue($this->propertyPath);
         $operator    = OperationFabric::newOperation($actualValue, $this->valueToCompare, $this->operator);
         $result      = $operator->matches();
 

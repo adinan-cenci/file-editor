@@ -12,7 +12,7 @@ namespace AdinanCenci\FileEditor\Search\Iterator;
  * @property int $length
  *   The length of the line.
  */
-class MetadataWrapper
+class MetadataWrapper implements MetadataWrapperInterface
 {
     /**
      * @var int
@@ -65,11 +65,42 @@ class MetadataWrapper
         return $this->fallbackIsset($propertyName);
     }
 
+    /**
+     * Retrieves the value we want from $data, given the path.
+     *
+     * @param string|string[] $propertyPath
+     *   A path to extract the value from $data.
+     *
+     * @return string|int|float|bool|null|array|\stdClass
+     *   Tha value extracted from $data.
+     */
+    public function getValue($propertyPath)
+    {
+        $propertyPath = (array) $propertyPath;
+        $data = $this;
+
+        foreach ($propertyPath as $part) {
+            if (isset($data->{$part})) {
+                $data = $data->{$part};
+            } else {
+                return null;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Returns the lenght of the line.
+     */
     protected function computeLength()
     {
         return strlen($this->content);
     }
 
+    /**
+     * Returns the position of the line in the file.
+     */
     protected function computeLineNumber()
     {
         return $this->position;

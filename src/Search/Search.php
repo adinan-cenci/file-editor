@@ -23,6 +23,12 @@ class Search implements ConditionGroupInterface
     protected ConditionGroupInterface $mainConditionGroup;
 
     /**
+     * @var AdinanCenci\FileEditor\Search\Order;
+     *   Object to order the results.
+     */
+    protected Order $order;
+
+    /**
      * Constructor.
      *
      * @param AdinanCenci\FileEditor\File
@@ -36,6 +42,7 @@ class Search implements ConditionGroupInterface
         $this->mainConditionGroup = $operator == 'OR'
             ? new OrConditionGroup()
             : new AndConditionGroup();
+        $this->order = new Order();
     }
 
     /**
@@ -69,7 +76,14 @@ class Search implements ConditionGroupInterface
             }
         }
 
+        $this->order->order($results);
         return $results;
+    }
+
+    public function orderBy(mixed $property, string $direction = 'ASC')
+    {
+        $this->order->orderBy($property, $direction);
+        return $this;
     }
 
     /**
