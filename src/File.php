@@ -29,11 +29,17 @@ class File
         $this->fileName = $fileName;
     }
 
+    /**
+     * Return read only properties.
+     *
+     * @param string $propertyName
+     *   Property name.
+     */
     public function __get(string $propertyName)
     {
         switch ($propertyName) {
             case 'lines':
-                return new FileIterator($this->fileName);
+                return $this->lines();
                 break;
             case 'fileName':
             case 'filename':
@@ -46,6 +52,17 @@ class File
 
         \trigger_error('Trying to retrieve unknown property ' . $propertyName, \E_USER_ERROR);
         return null;
+    }
+
+    /**
+     * Returns an object to iterate through the lines in the file.
+     *
+     * @return \Iterator
+     *   The iterator object.
+     */
+    public function lines(): \Iterator
+    {
+        return new FileIterator($this->fileName);
     }
 
     /**

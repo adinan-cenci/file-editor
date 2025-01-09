@@ -26,6 +26,9 @@ class Order
      *   The property to order by.
      * @param string $direction
      *   Ascending or descending.
+     *
+     * @return AdinanCenci\FileEditor\Search\Order
+     *   Return itself.
      */
     public function orderBy(mixed $property, string $direction = 'ASC')
     {
@@ -41,9 +44,9 @@ class Order
      * Orders the search results.
      *
      * @param AdinanCenci\FileEditor\Search\Iterator\MetadataWrapper[] $results
-     *   The search results.
+     *   The search results to order.
      */
-    public function order(&$results)
+    public function order(array &$results)
     {
         if (!$this->criteria) {
             return;
@@ -77,13 +80,24 @@ class Order
      *
      * @return int
      */
-    protected function sortAtRandom($item1, $item2)
+    protected function sortAtRandom($item1, $item2): int
     {
         return rand(1, 1000) % 2 == 0
             ? -1
             :  1;
     }
 
+    /**
+     * Sorts by property.
+     *
+     * @param string|array $property
+     *   Path to the property.
+     * @param string $direction
+     *   Ascending or descending.
+     *
+     * @return closure
+     *   A function to pass to uasort().
+     */
     protected function sortByProperty($property, $direction)
     {
         return function ($item1, $item2) use ($property, $direction) {
@@ -94,7 +108,22 @@ class Order
         };
     }
 
-    protected function compare($value1, $value2, $direction)
+    /**
+     * Compare two values.
+     *
+     * @param mixed $value1
+     *   Value 1.
+     * @param mixed $value2
+     *   Value 2.
+     * @param string $direction
+     *  Ascending or descending.
+     *
+     * @return int
+     *   0 = equals,
+     *   1 = $value1 wins
+     *  -1 = $value2 wins.
+     */
+    protected function compare($value1, $value2, $direction): int
     {
         if ($value1 == $value2) {
             return 0;
@@ -112,33 +141,97 @@ class Order
             return $this->compareArrays($value1, $value2, $direction);
         }
 
+        if (is_null($value1) || is_null($value2)) {
+            return $this->compareNulls($value1, $value2, $direction);
+        }
+
         return 0;
     }
 
-    protected function compareNumbers($value1, $value2, $direction)
+    /**
+     * Compare null values with other types.
+     *
+     * @param mixed $value1
+     *   Value 1.
+     * @param mixed $value2
+     *   Value 2.
+     * @param string $direction
+     *  Ascending or descending.
+     *
+     * @return int
+     *   0 = equals,
+     *   1 = $value1 wins
+     *  -1 = $value2 wins.
+     */
+    protected function compareNulls($value1, $value2, $direction): int
     {
-        if ($value1 == $value2) {
-            return 0;
-        }
+        return $direction == 'ASC'
+            ? (!is_null($value1) ?  1 : -1)
+            : (!is_null($value1) ? -1 :  1);
+    }
 
+    /**
+     * Compare numeric values.
+     *
+     * @param mixed $value1
+     *   Value 1.
+     * @param mixed $value2
+     *   Value 2.
+     * @param string $direction
+     *  Ascending or descending.
+     *
+     * @return int
+     *   0 = equals,
+     *   1 = $value1 wins
+     *  -1 = $value2 wins.
+     */
+    protected function compareNumbers($value1, $value2, $direction): int
+    {
         return $direction == 'ASC'
             ? ($value1 > $value2 ?  1 : -1)
             : ($value1 > $value2 ? -1 :  1);
     }
 
-    protected function compareStrings($value1, $value2, $direction)
+    /**
+     * Compare strings.
+     *
+     * @param mixed $value1
+     *   Value 1.
+     * @param mixed $value2
+     *   Value 2.
+     * @param string $direction
+     *  Ascending or descending.
+     *
+     * @return int
+     *   0 = equals,
+     *   1 = $value1 wins
+     *  -1 = $value2 wins.
+     */
+    protected function compareStrings($value1, $value2, $direction): int
     {
         $v = strcmp($value1, $value2);
-        if ($v == 0) {
-            return 0;
-        }
 
         return $direction == 'ASC'
-            ? ($v > 0 ? -1 :  1)
-            : ($v < 0 ?  1 : -1);
+            ? ($v > 0 ?  1 : -1)
+            : ($v > 0 ? -1 :  1);
     }
 
-    protected function compareArrays($value1, $value2, $direction)
+    /**
+     * Compare arrays.
+     *
+     * @param mixed $value1
+     *   Value 1.
+     * @param mixed $value2
+     *   Value 2.
+     * @param string $direction
+     *  Ascending or descending.
+     *
+     * @return int
+     *   0 = equals,
+     *   1 = $value1 wins
+     *  -1 = $value2 wins.
+     */
+    protected function compareArrays($value1, $value2, $direction): int
     {
         $t1 = 0;
         $t2 = 0;
@@ -153,6 +246,8 @@ class Order
             $t2 += $direction == 'DESC' && $c < 0 ? 1 : 0;
         }
 
-        return $this->compareNumbers($t1, $t2, $direction);
+        return $t1 == $t2
+            ? 0
+            : $this->compareNumbers($t1, $t2, $direction);
     }
 }

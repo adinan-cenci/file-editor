@@ -3,14 +3,7 @@
 namespace AdinanCenci\FileEditor\Search\Iterator;
 
 /**
- * Wrapper to extract metadata from the lines.
- *
- * @property string $content
- *   The content of the line.
- * @property int $position
- *   The positon of the line in the file.
- * @property int $length
- *   The length of the line.
+ * Wrapper to extract metadata from the subject of our search.
  */
 class MetadataWrapper implements MetadataWrapperInterface
 {
@@ -45,6 +38,14 @@ class MetadataWrapper implements MetadataWrapperInterface
         return $this->content;
     }
 
+    /**
+     * Returns data from our subject, actual or computed.
+     *
+     * @param string $propertyName
+     *   The data we want to retrieve.
+     *
+     * @return mixed|null
+     */
     public function __get(string $propertyName)
     {
         $methodName = 'compute' . ucfirst($propertyName);
@@ -55,6 +56,29 @@ class MetadataWrapper implements MetadataWrapperInterface
         return $this->fallbackCompute($propertyName);
     }
 
+    /**
+     * Fallback compute method.
+     *
+     * If there is no method for the specified property.
+     *
+     * @param string $propertyName
+     *   The data we want to retrieve.
+     */
+    protected function fallbackCompute(string $propertyName)
+    {
+        if (isset($this->{$propertyName})) {
+            return $this->{$propertyName};
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if data from our subject is set, actual or computed.
+     *
+     * @param string $propertyName
+     *   The data we want to check if it is set.
+     */
     public function __isset(string $propertyName)
     {
         $methodName = 'isset' . ucfirst($propertyName);
@@ -63,6 +87,20 @@ class MetadataWrapper implements MetadataWrapperInterface
         }
 
         return $this->fallbackIsset($propertyName);
+    }
+
+    /**
+     * Fallback isset method.
+     *
+     * If there is no method for the specified property.
+     *
+     * @param string $propertyName
+     *   The data we want to check if it is set.
+     */
+    protected function fallbackIsset(string $propertyName)
+    {
+        $value = $this->__get($propertyName);
+        return !is_null($value);
     }
 
     /**
@@ -104,20 +142,5 @@ class MetadataWrapper implements MetadataWrapperInterface
     protected function computeLineNumber()
     {
         return $this->position;
-    }
-
-    protected function fallbackCompute(string $propertyName)
-    {
-        if (isset($this->{$propertyName})) {
-            return $this->{$propertyName};
-        }
-
-        return null;
-    }
-
-    protected function fallbackIsset(string $propertyName)
-    {
-        $value = $this->__get($propertyName);
-        return !is_null($value);
     }
 }
