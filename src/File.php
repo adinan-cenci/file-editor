@@ -234,6 +234,60 @@ class File
     }
 
     /**
+     * Returns random lines from the file.
+     *
+     * @param int $count
+     *   How many lines to return.
+     * @param int|null $from
+     *   Limits the pool of lines available.
+     * @param int|null $to
+     *   Limits the pool of lines available.
+     *
+     * @return string[]
+     *   The lines we retrieved.
+     */
+    public function getRandomLines(int $count, ?int $from = null, ?int $to = null): array
+    {
+        $lastIndex = $this->nameLastLine(true) - 1;
+
+        if (is_null($from)) {
+            $from = 0;
+        }
+
+        if (is_null($to)) {
+            $to = $lastIndex;
+        }
+
+        if ($from > $to) {
+            $a = $from;
+
+            $from = $to;
+            $to = $a;
+        }
+
+        if ($to > $lastIndex) {
+            $to = $lastIndex;
+        }
+
+        if ($from >= $to) {
+            // Aight, I give up.
+            return [];
+        }
+
+        $count = $from > 0 && $to - $from < $count
+            ? $to - $from + 1
+            : $count;
+
+        $lines = [];
+        while (count($lines) < $count) {
+            $lines[] = rand($from, $to);
+            $lines = array_unique($lines);
+        }
+
+        return $this->getLines($lines);
+    }
+
+    /**
      * Returns an instance of the class used to edit the file.
      *
      * @return AdinanCenci\FileEditor\Crud

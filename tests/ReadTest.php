@@ -29,6 +29,26 @@ final class ReadTest extends Base
         $file = new File('tests/template.txt');
         $lines = $file->getLines([0, 2, 4]);
 
-        $this->assertEquals([0 => '[ 0] Avantasia', 2 => '[ 2] Halloween', 4 => '[ 4] Stratovarius'], $lines);
+        $this->assertEquals([
+            0 => '[ 0] Avantasia',
+            2 => '[ 2] Halloween',
+            4 => '[ 4] Stratovarius'
+        ], $lines);
+    }
+
+    public function testGetRandomLines()
+    {
+        $file = new File('tests/template.txt');
+        $lines = $file->getRandomLines(5);
+        $this->assertEquals(5, count($lines));
+
+        $lines = $file->getRandomLines(2, 0, 1);
+        $this->assertEquals(2, count($lines));
+
+        $lines = $file->getRandomLines(2, 2, 15);
+        $this->assertEquals(2, count($lines));
+
+        $lines = $file->getRandomLines(10, 14, 15);
+        $this->assertEquals(2, count($lines));
     }
 }
