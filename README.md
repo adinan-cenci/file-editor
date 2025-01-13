@@ -116,6 +116,7 @@ $file->deleteLine($lineN);
 $linesN = [0, 1, 2];
 $file->deleteLines($linesN);
 ```
+
 <br><br>
 
 ## Searching
@@ -233,6 +234,21 @@ $results = $search->find();
 // Will match entries for Angra from before line 2010 OR
 // entries for Almah from after that
 ```
+
+### Order
+
+You may also order the results by different properties.
+
+```php
+$search = $file->search();
+
+$search->orderBy('content', 'ASC');
+// Order search results alphabetically.
+$search->orderBY('length', 'DESC');
+// Order results by the line's length decrescently .
+```
+
+
 
 <br><br>
 
