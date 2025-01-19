@@ -7,7 +7,7 @@ use AdinanCenci\FileEditor\Search\Search;
 /**
  * @property string $fileName
  *   The filename.
- * @property FileIterator $lines
+ * @property AdinanCenci\FileEditor\FileIterator $lines
  *   Iterator object to read the file line by line.
  * @property int $lineCount
  *   The number of lines in the file.
@@ -91,9 +91,9 @@ class File
      *   The position within the file, if not provided, $content will be added
      *   to the end of the file.
      *
-     * @throws DirectoryDoesNotExist
-     * @throws DirectoryIsNotWritable
-     * @throws FileIsNotWritable
+     * @throws AdinanCenci\FileEditor\Exception\DirectoryDoesNotExist
+     * @throws AdinanCenci\FileEditor\Exception\DirectoryIsNotWritable
+     * @throws AdinanCenci\FileEditor\Exception\FileIsNotWritable
      */
     public function addLine(string $content, int $line = -1): void
     {
@@ -111,9 +111,9 @@ class File
      *   If true, places the lines to the end of the file.
      *   If false, the placement will reflect the array's keys.
      *
-     * @throws DirectoryDoesNotExist
-     * @throws DirectoryIsNotWritable
-     * @throws FileIsNotWritable
+     * @throws AdinanCenci\FileEditor\Exception\DirectoryDoesNotExist
+     * @throws AdinanCenci\FileEditor\Exception\DirectoryIsNotWritable
+     * @throws AdinanCenci\FileEditor\Exception\FileIsNotWritable
      */
     public function addLines(array $lines, bool $toTheEndOfTheFile = true): void
     {
@@ -138,9 +138,9 @@ class File
      * @param string $content
      *   The new content of the line.
      *
-     * @throws DirectoryDoesNotExist
-     * @throws DirectoryIsNotWritable
-     * @throws FileIsNotWritable
+     * @throws AdinanCenci\FileEditor\Exception\DirectoryDoesNotExist
+     * @throws AdinanCenci\FileEditor\Exception\DirectoryIsNotWritable
+     * @throws AdinanCenci\FileEditor\Exception\FileIsNotWritable
      */
     public function setLine(int $line, string $content): void
     {
@@ -154,9 +154,9 @@ class File
      *   A numerical array: [ lineNumber => content ].
      *   Will ovewrite the lines if already set.
      *
-     * @throws DirectoryDoesNotExist
-     * @throws DirectoryIsNotWritable
-     * @throws FileIsNotWritable
+     * @throws AdinanCenci\FileEditor\Exception\DirectoryDoesNotExist
+     * @throws AdinanCenci\FileEditor\Exception\DirectoryIsNotWritable
+     * @throws AdinanCenci\FileEditor\Exception\FileIsNotWritable
      */
     public function setLines(array $lines): void
     {
@@ -174,8 +174,8 @@ class File
      * @return string|null
      *   The contents of the line, null if there is nothing there.
      *
-     * @throws FileDoesNotExist
-     * @throws FileIsNotReadable
+     * @throws AdinanCenci\FileEditor\Exception\FileDoesNotExist
+     * @throws AdinanCenci\FileEditor\Exception\FileIsNotReadable
      */
     public function getLine(int $line): ?string
     {
@@ -192,8 +192,8 @@ class File
      * @return (string|null)[]
      *   The contents of the specified lines.
      *
-     * @throws FileDoesNotExist
-     * @throws FileIsNotReadable
+     * @throws AdinanCenci\FileEditor\Exception\FileDoesNotExist
+     * @throws AdinanCenci\FileEditor\Exception\FileIsNotReadable
      */
     public function getLines(array $lines): array
     {
@@ -209,8 +209,8 @@ class File
      * @param int $line
      *   The position within the file.
      *
-     * @throws FileDoesNotExist
-     * @throws FileIsNotReadable
+     * @throws AdinanCenci\FileEditor\Exception\FileDoesNotExist
+     * @throws AdinanCenci\FileEditor\Exception\FileIsNotReadable
      */
     public function deleteLine(int $line): void
     {
@@ -223,8 +223,8 @@ class File
      * @param int[] $lines
      *   The positions within the file.
      *
-     * @throws FileDoesNotExist
-     * @throws FileIsNotReadable
+     * @throws AdinanCenci\FileEditor\Exception\FileDoesNotExist
+     * @throws AdinanCenci\FileEditor\Exception\FileIsNotReadable
      */
     public function deleteLines(array $lines): void
     {
@@ -288,7 +288,7 @@ class File
     }
 
     /**
-     * Returns an instance of the class used to edit the file.
+     * Returns an object to edit the file.
      *
      * @return AdinanCenci\FileEditor\Crud
      */
@@ -345,13 +345,13 @@ class File
     }
 
     /**
-     * Counts how many lines there is on a file.
+     * Counts how many lines there is in a file.
      *
      * @param string $fileName
      *   Absolute path to the file.
      *
      * @param null|int $lastNonEmptyLine
-     *   Will return the last line that is not empty.
+     *   Will turn into the last line that is not empty.
      *
      * @return int
      *   The number of lines in the file.

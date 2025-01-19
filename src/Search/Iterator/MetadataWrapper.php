@@ -62,7 +62,7 @@ class MetadataWrapper implements MetadataWrapperInterface
      * If there is no method for the specified property.
      *
      * @param string $propertyName
-     *   The data we want to retrieve.
+     *   The property we want to retrieve.
      */
     protected function fallbackCompute(string $propertyName)
     {
@@ -74,10 +74,10 @@ class MetadataWrapper implements MetadataWrapperInterface
     }
 
     /**
-     * Check if data from our subject is set, actual or computed.
+     * Check if property from our subject is set, actual or computed.
      *
      * @param string $propertyName
-     *   The data we want to check if it is set.
+     *   The property we want to check if it is set.
      */
     public function __isset(string $propertyName)
     {
@@ -95,7 +95,7 @@ class MetadataWrapper implements MetadataWrapperInterface
      * If there is no method for the specified property.
      *
      * @param string $propertyName
-     *   The data we want to check if it is set.
+     *   The property we want to check if it is set.
      */
     protected function fallbackIsset(string $propertyName)
     {

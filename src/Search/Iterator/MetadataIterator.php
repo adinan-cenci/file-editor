@@ -11,6 +11,9 @@ class MetadataIterator extends FileIterator implements \Iterator
 {
     /**
      * \Iterator::current()
+     *
+     * @return AdinanCenci\FileEditor\Search\Iterator\MetadataWrapper
+     *   Metadata wrapper.
      */
     public function current()
     {

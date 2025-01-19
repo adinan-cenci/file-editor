@@ -14,7 +14,7 @@ interface ConditionGroupInterface extends ConditionInterface
      * @param string $operator
      *   The operator.
      *
-     * @return self
+     * @return AdinanCenci\FileEditor\Search\Condition\ConditionGroupInterface
      *   Returns self to chain in other methods.
      */
     public function condition($propertyPath, $valueToCompare, string $operator = '='): ConditionGroupInterface;

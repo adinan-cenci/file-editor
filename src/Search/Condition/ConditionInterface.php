@@ -13,7 +13,7 @@ interface ConditionInterface
      *   The data to be evaluated.
      *
      * @return bool
-     *   Trues if it passes, false if it doesn't.
+     *   Trues if it meets the condition, false if it doesn't.
      */
     public function evaluate(MetadataWrapperInterface $data): bool;
 }

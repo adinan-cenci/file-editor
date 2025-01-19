@@ -23,17 +23,19 @@ class Condition implements ConditionInterface
 
     /**
      * @var string
-     *   The operator.
+     *   The comparison operator.
      */
     protected string $operator;
 
     /**
+     * Constructor.
+     *
      * @param array|string[] $propertyPath
      *   A path to extract the actual value during evaluation.
      * @param mixed $valueToCompare
      *   The value for comparison.
      * @param string $operator
-     *   The operator.
+     *   The comparison operator.
      */
     public function __construct(mixed $propertyPath, mixed $valueToCompare, string $operator = '=')
     {

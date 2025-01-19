@@ -7,7 +7,7 @@ use AdinanCenci\FileEditor\Search\Condition\OrConditionGroup;
 class AndConditionGroup implements ConditionInterface, ConditionGroupInterface
 {
     /**
-     * @param ConditionInterface[] $conditions
+     * @param AdinanCenci\FileEditor\Search\Condition\ConditionInterface[] $conditions
      *   Array of conditions.
      */
     protected array $conditions = [];
