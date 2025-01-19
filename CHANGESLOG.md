@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 - [Issue 5](https://github.com/adinan-cenci/file-editor/issues/5): Ability of sorting search results with `Search::orderBy()`.
+- `File::getRandomLines()` to retrieve random lines.
 
 ## Changed
 - Refactorated a lot of the code, renaming several classes.
