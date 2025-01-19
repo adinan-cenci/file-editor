@@ -5,16 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - ??????????
-
-## Fixed
-- [Issue 5](https://github.com/adinan-cenci/file-editor/issues/5): Refactored a lot of code and improved documentation.
+## [2.0.0] - 2025-01-19
 
 ## Added
-- The option of ordering search results.
+- [Issue 5](https://github.com/adinan-cenci/file-editor/issues/5): Ability of sorting search results with `Search::orderBy()`.
+
+## Changed
+- Refactorated a lot of the code, renaming several classes.
 
 ## Removed
-- `File::scrutinyLines`, part of the refactoring.
+- The `File::scrutinyLines` property.
+
+## Fixed
+- Improved documentation.
 
 ---
 
