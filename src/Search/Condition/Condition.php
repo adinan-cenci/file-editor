@@ -1,71 +1,79 @@
-<?php 
+<?php
 namespace AdinanCenci\FileEditor\Search\Condition;
 
-use AdinanCenci\FileEditor\Search\Operator\OperatorInterface;
-use AdinanCenci\FileEditor\Search\Operator\Equals;
-use AdinanCenci\FileEditor\Search\Operator\Includes;
+use AdinanCenci\FileEditor\Search\Iterator\MetadataWrapperInterface;
+use AdinanCenci\FileEditor\Search\Operation\OperatorInterface;
+use AdinanCenci\FileEditor\Search\Operation\Equals;
+use AdinanCenci\FileEditor\Search\Operation\Includes;
+use AdinanCenci\FileEditor\Search\Operation\OperationFabric;
 
-class Condition implements ConditionInterface 
+class Condition implements ConditionInterface
 {
-    protected array $property;
-    protected $valueToCompare;
-    protected string $operatorClass;
-    protected bool $negate = false;
-
-    const EQUALS_OPERATOR                   = 'AdinanCenci\FileEditor\Search\Operator\EqualOperator';
-    const INCLUDES_OPERATOR                 = 'AdinanCenci\FileEditor\Search\Operator\IncludeOperator';
-    const LIKES_OPERATOR                    = 'AdinanCenci\FileEditor\Search\Operator\LikeOperator';
-    const BETWEEM_OPERATOR                  = 'AdinanCenci\FileEditor\Search\Operator\BetweenOperator';
-    const IS_NULL_OPERATOR                  = 'AdinanCenci\FileEditor\Search\Operator\IsNullOperator';
-    const LESS_THAN_OPERATOR                = 'AdinanCenci\FileEditor\Search\Operator\LessThanOperator';
-    const GREATER_THAN_OPERATOR             = 'AdinanCenci\FileEditor\Search\Operator\GreaterThanOperator';
-    const LESS_THAN_OR_EQUAL_TO             = 'AdinanCenci\FileEditor\Search\Operator\LessThanOrEqualToOperator';
-    const GREATER_THAN_OR_EQUAL_TO_OPERATOR = 'AdinanCenci\FileEditor\Search\Operator\GreaterThanOrEqualToOperator';
-    const REGEX_OPERATOR                    = 'AdinanCenci\FileEditor\Search\Operator\RegexOperator';
+    /**
+     * @var string[]
+     *   A path to extract the actual value during evaluation.
+     */
+    protected array $propertyPath;
 
     /**
-     * @param array|string[] $property Either a simle string or an array of strings to reache nested properties.
-     * @param mixed $valueToCompare
-     * @param string $operatorId
+     * @var mixed
+     *   The value for comparison.
      */
-    public function __construct($property, $valueToCompare, string $operatorId = '=') 
+    protected mixed $valueToCompare;
+
+    /**
+     * @var string
+     *   The comparison operator.
+     */
+    protected string $operator;
+
+    /**
+     * Constructor.
+     *
+     * @param array|string[] $propertyPath
+     *   A path to extract the actual value during evaluation.
+     * @param mixed $valueToCompare
+     *   The value for comparison.
+     * @param string $operator
+     *   The comparison operator.
+     */
+    public function __construct(mixed $propertyPath, mixed $valueToCompare, string $operator = '=')
     {
-        $this->property       = (array) $property;
+        $this->propertyPath   = (array) $propertyPath;
         $this->valueToCompare = $valueToCompare;
-        $class                = $this->getOperatorClass($operatorId, $negation);
+        $this->operator       = $operator;
 
-        if (is_null($class)) {
-            throw new \InvalidArgumentException('Unrecognized operator ' . $operatorId);
+        if (!OperationFabric::isValidOperatorId($operator)) {
+            throw new \InvalidArgumentException('Unrecognized operator ' . $operator);
         }
-
-        $this->operatorClass = $class;
-        $this->negation      = $negation;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function evaluate($data) : bool
+    public function evaluate(MetadataWrapperInterface $data): bool
     {
-        $actualValue = $this->getValue($data, $this->property);
-        $operator    = new $this->operatorClass($actualValue, $this->valueToCompare);
+        $actualValue = $data->getValue($this->propertyPath);
+        $operator    = OperationFabric::newOperation($actualValue, $this->valueToCompare, $this->operator);
         $result      = $operator->matches();
 
-        return $this->negation
-            ? !$result
-            : $result;
+        return $result;
     }
 
     /**
-     * Retrieves from $data the value we are going to submit to the operator.
-     * 
+     * Retrieves the value we want from $data, given the path.
+     *
      * @param array|\stdClass $data
-     * @param array $property
+     *   Data to extract the value from.
+     * @param string[] $propertyPath
+     *   A path to extract the value from $data.
+     *
      * @return string|int|float|bool|null|array|\stdClass
+     *   Tha value extracted from $data.
      */
-    protected function getValue($data, array $property) 
+    protected function getValue($data, array $propertyPath)
     {
-        foreach ($property as $part) {
+        foreach ($propertyPath as $part) {
             if (is_object($data) && isset($data->{$part})) {
                 $data = $data->{$part};
             } elseif (is_array($data) && isset($data[$part])) {
@@ -76,61 +84,5 @@ class Condition implements ConditionInterface
         }
 
         return $data;
-    }
-
-    /**
-     * @param string $operatorId A string representing an operation.
-     * @param bool $negation Turns true if $operatorId is negating the operation.
-     * @return string|null The class name for the operation.
-     */
-    protected function getOperatorClass(string $operatorId, &$negation = false) : ?string
-    {
-        $negation = substr_count($operatorId, '!') || 
-          substr_count($operatorId, 'NOT') || 
-          $operatorId == 'UNLIKE';
-
-        switch ($operatorId) {
-            case '=' :
-            case '!=' :
-                return self::EQUALS_OPERATOR;
-                break;
-            case 'IN' :
-            case 'NOT IN' :
-            case '!IN' :
-                return self::INCLUDES_OPERATOR;
-                break;
-            case 'LIKE' :
-            case 'NOT LIKE' :
-            case '!LIKE' :
-                return self::LIKES_OPERATOR;
-                break;
-            case 'BETWEEN' :
-            case 'NOT BETWEEN' :
-            case '!BETWEEN' :
-                return self::BETWEEM_OPERATOR;
-                break;
-            case 'IS NULL':
-            case 'NOT NULL':
-            case '!NULL':
-                return self::IS_NULL_OPERATOR;
-                break;
-            case '<':
-                return self::LESS_THAN_OPERATOR;
-                break;
-            case '>':
-                return self::GREATER_THAN_OPERATOR;
-                break;
-            case '<=':
-                return self::LESS_THAN_OR_EQUAL_TO;
-                break;
-            case '>=':
-                return self::GREATER_THAN_OR_EQUAL_TO_OPERATOR;
-                break;
-            case 'REGEX':
-                return self::REGEX_OPERATOR;
-                break;
-        }
-
-        return null;
     }
 }

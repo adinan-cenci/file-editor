@@ -1,18 +1,19 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AdinanCenci\FileEditor\Tests;
 
-use AdinanCenci\FileEditor\Search\Operator\RegexOperator;
+use AdinanCenci\FileEditor\Search\Operation\RegexOperation;
 
-final class OperatorRegexTest extends Base
+final class OperationRegexTest extends Base
 {
-    public function testMatchRegexExpression() 
+    public function testMatchRegexExpression()
     {
         $actualValue = 'Today is 16/07/2023. Hello World';
         $toCompare = '#\d{2}/\d{2}/\d{4}#';
 
-        $operator = new RegexOperator($actualValue, $toCompare);
+        $operator = new RegexOperation($actualValue, $toCompare);
         $this->assertTrue($operator->matches());
     }
 }

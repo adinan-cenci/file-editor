@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AdinanCenci\FileEditor\Tests;
@@ -7,7 +8,7 @@ use AdinanCenci\FileEditor\File;
 
 final class CountLinesTest extends Base
 {
-    public function testCountNumberOfLinesInAFile() 
+    public function testCountNumberOfLinesInAFile()
     {
         $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
         $this->resetTest($fileName, './tests/template-2.txt');
@@ -18,7 +19,7 @@ final class CountLinesTest extends Base
         $this->assertEquals(25, $numberOfLines);
     }
 
-    public function testNameLastLine() 
+    public function testNameLastLine()
     {
         $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
         $this->resetTest($fileName, './tests/template-2.txt');
@@ -29,7 +30,7 @@ final class CountLinesTest extends Base
         $this->assertEquals(25, $lastLine);
     }
 
-    public function testNameLastNonEmptyLine() 
+    public function testNameLastNonEmptyLine()
     {
         $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
         $this->resetTest($fileName, './tests/template-2.txt');
@@ -48,5 +49,4 @@ final class CountLinesTest extends Base
 
         $this->assertEquals(25, $lastLine);
     }
-
 }

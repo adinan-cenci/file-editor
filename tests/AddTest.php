@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace AdinanCenci\FileEditor\Tests;
@@ -7,7 +8,7 @@ use AdinanCenci\FileEditor\File;
 
 final class AddTest extends Base
 {
-    public function testAddSingleLine() 
+    public function testAddSingleLine()
     {
         $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
         $this->resetTest($fileName);
@@ -19,7 +20,7 @@ final class AddTest extends Base
         $this->assertEquals('Elvenking', $lastLine);
     }
 
-    public function testAddMultipleLinesToTheEndOfTheFile() 
+    public function testAddMultipleLinesToTheEndOfTheFile()
     {
         $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
         $this->resetTest($fileName);
@@ -31,7 +32,7 @@ final class AddTest extends Base
         $this->assertEquals([16 => '[16] Vis Mystica', 17 => '[17] Hammer King'], $lines);
     }
 
-    public function testAddMultipleLinesToTheEndOfTheFileWithBlankLinesAtTheEnd() 
+    public function testAddMultipleLinesToTheEndOfTheFileWithBlankLinesAtTheEnd()
     {
         $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
         $this->resetTest($fileName, './tests/template-2.txt');
@@ -43,7 +44,7 @@ final class AddTest extends Base
         $this->assertEquals([16 => '[16] Vis Mystica', 17 => '[17] Hammer King'], $lines);
     }
 
-    public function testAddMultipleLines() 
+    public function testAddMultipleLines()
     {
         $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
         $this->resetTest($fileName);
@@ -55,7 +56,7 @@ final class AddTest extends Base
         $this->assertEquals([5 => 'Vis Mystica', 8 => 'Hammer King'], $lines);
     }
 
-    public function testAddPastEndOfTheFile() 
+    public function testAddPastEndOfTheFile()
     {
         $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
         $this->resetTest($fileName);
@@ -67,7 +68,7 @@ final class AddTest extends Base
         $this->assertEquals('Elvenking', $lastLine);
     }
 
-    public function testAddLinesWithGaps() 
+    public function testAddLinesWithGaps()
     {
         $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
         $this->resetTest($fileName, '');
@@ -86,7 +87,7 @@ final class AddTest extends Base
         ], $lines);
     }
 
-    public function testCreateFromScratch() 
+    public function testCreateFromScratch()
     {
         $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
         if (file_exists($fileName)) {

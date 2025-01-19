@@ -1,13 +1,19 @@
-<?php 
+<?php
+
 namespace AdinanCenci\FileEditor\Search\Condition;
 
-interface ConditionInterface 
+use AdinanCenci\FileEditor\Search\Iterator\MetadataWrapperInterface;
+
+interface ConditionInterface
 {
     /**
-     * Will determine if $data passes the condition based on its properties.
-     * 
-     * @param object|array $data
+     * Will determine if $data meets the condition.
+     *
+     * @param AdinanCenci\FileEditor\Search\Iterator\MetadataWrapperInterface $data
+     *   The data to be evaluated.
+     *
      * @return bool
+     *   Trues if it meets the condition, false if it doesn't.
      */
-    public function evaluate($data) : bool;
+    public function evaluate(MetadataWrapperInterface $data): bool;
 }

@@ -6,9 +6,7 @@ This used to be part of my [json-lines](https://github.com/adinan-cenci/json-lin
 
 <br><br>
 
-## How to use it
-
-**Instantiating**
+## Instantiating
 
 ```php
 use AdinanCenci\FileEditor\File;
@@ -18,7 +16,7 @@ $file = new File('my-file.txt');
 
 <br><br>
 
-**Iterating**
+## Iterating
 
 ```php
 foreach ($file->lines as $lineN => $line) {
@@ -28,15 +26,15 @@ foreach ($file->lines as $lineN => $line) {
 
 <br><br>
 
-**Add a line to the end of the file**
+## Editing
+
+### Adding a line to the end of the file
 
 ```php
 $file->addLine('foo-bar');
 ```
 
-<br><br>
-
-**Add a line to the middle of the file**
+### Adding a line to the middle of the file
 
 ```php
 $lineN = 5;
@@ -44,11 +42,9 @@ $line  = 'foo-bar';
 $file->addLine($line, $lineN);
 ```
 
-If the file has less than `$line` lines, the gap will be filled with blank lines.
+If the file has less than `$lineN` lines, the gap will be filled with empty lines.
 
-<br><br>
-
-**Add several lines to the end of the file**
+### Adding several lines to the end of the file
 
 ```php
 $lines = [
@@ -59,9 +55,7 @@ $lines = [
 $file->addLines($lines);
 ```
 
-<br><br>
-
-**Add several lines in the middle of the file**
+### Adding several lines in the middle of the file
 
 ```php
 $lines = [
@@ -72,9 +66,7 @@ $lines = [
 $file->addLines($lines, false);
 ```
 
-<br><br>
-
-**Replace an existing line**
+### Replacing an existing line
 
 ```php
 $lineN = 10;
@@ -82,11 +74,9 @@ $line  = 'foo-bar';
 $file->setLine($lineN, $line);
 ```
 
-The difference between `::addLine()` and `::setLine()` is that `::setLine()` will overwrite whatever is already present at `$line`. 
+The difference between `::addLine()` and `::setLine()` is that the latter will overwrite whatever is already present at `$lineN`. 
 
-<br><br>
-
-**Set multiple lines**
+### Replacing multiple lines
 
 ```php
 $lines = [
@@ -97,9 +87,7 @@ $lines = [
 $file->setLines($lines);
 ```
 
-<br><br>
-
-**Retrieve lines**
+### Retrieveing a single line
 
 ```php
 $lineN = 10;
@@ -108,27 +96,21 @@ $line  = $file->getLine($lineN);
 
 Returns `null` if the line does not exist.
 
-<br><br>
-
-**Retrieve multiple objects**
+### Retrieving multiple lines
 
 ```php
 $linesN = [0, 1, 2];
 $lines  = $file->getLines($linesN);
 ```
 
-<br><br>
-
-**Delete lines**
+### Deleting a single line
 
 ```php
 $lineN = 10;
 $file->deleteLine($lineN);
 ```
 
-<br><br>
-
-**Delete multiple lines**
+### Deleting multiple lines
 
 ```php
 $linesN = [0, 1, 2];
@@ -137,11 +119,11 @@ $file->deleteLines($linesN);
 
 <br><br>
 
-## Search
+## Searching
 
 The library also provides a way to query the file.  
 Instantiate a new `Search` object, give it conditions and call the `::find()` method, 
-it will return an array of matching lines indexed by their line in the file.
+it will return an array of matching lines indexed by their position in the file.
 
 ```php
 $search = $file->search();
@@ -149,18 +131,14 @@ $search->condition('content', 'value to compare', 'operator');
 $results = $search->find();
 ```
 
-<br><br>
-
-**Equals operator**
+### Equals operator
 
 ```php
-$search->condition('lineNumber', 10, '=');
+$search->condition('position', 10, '=');
 // Will match the 11th line in the file.
 ```
 
-<br><br>
-
-**In operator**
+### In operator
 
 ```php
 $search->condition('content', ['Iliad', ' Odyssey'], 'IN');
@@ -168,9 +146,7 @@ $search->condition('content', ['Iliad', ' Odyssey'], 'IN');
 // ( case insensitive ).
 ```
 
-<br><br>
-
-**Like operator**
+### Like operator
 
 ```php
 $search->condition('content', 'foo', 'LIKE');
@@ -182,35 +158,29 @@ $search->condition('content', ['foo', 'bar'], 'LIKE');
 // "fool", "barrier", "barista" etc.
 ```
 
-<br><br>
-
-**Regex operator**
+### Regex operator
 
 ```php
 $search->condition('content', '#\d{2}\/\d{2}\/\d{4}#', 'REGEX');
 // Will match lines against a regex expression.
 ```
 
-<br><br>
-
-**Number comparison operators**
+### Number comparison operators
 
 It also supports "less than", "greater than", "less than or equal", "greater than or equal" and "between".
 
 ```php
 $search
-  ->condition('lineNumber', 2022, '<')
-  ->condition('lineNumber', 1990, '>')
-  ->condition('lineNumber', 60, '<=')
-  ->condition('lineNumber', 18, '>=')
+  ->condition('position', 2022, '<')
+  ->condition('position', 1990, '>')
+  ->condition('position', 60, '<=')
+  ->condition('position', 18, '>=')
   ->condition('length', [10, 50], 'BETWEEN');
 ```
 
-<br><br>
+### Negating conditions
 
-### Negating operators
-
-You may also negate the operators.
+You may also negate the conditions.
 
 ```php
 $search
@@ -220,18 +190,16 @@ $search
   ->condition('content', ['foo', 'bar'], 'UNLIKE');
 ```
 
-<br><br>
-
 ### Multiple conditions
 
-You may add multiple conditions to a search.
+You may add multiple conditions to a search object.
 By default all of the conditions must be met.
 
 ```php
 $search = $file->search();
 $search
   ->condition('content', 'Iron Maiden', '=')
-  ->condition('lineNumber', 2000, '<');
+  ->condition('position', 2000, '<');
 $results = $search->find();
 // Will match entries for Iron Maiden, before the line 2000.
 ```
@@ -247,9 +215,7 @@ $results = $search->find();
 // Will match entries for both Blind Guardian and Demons & Wizards.
 ```
 
-<br><br>
-
-### Conditions groups
+### Condition groups
 
 You may also group conditons to create complex queries.
 
@@ -258,22 +224,31 @@ $search = $file->search('OR');
 
 $search->andConditionGroup()
   ->condition('content', 'Angra', '=')
-  ->condition('lineNumber', 2010, '<');
+  ->condition('position', 2010, '<');
 
 $search->andConditionGroup()
   ->condition('content', 'Almah', '=')
-  ->condition('lineNumber', 2010, '>');
+  ->condition('position', 2010, '>');
 
 $results = $search->find();
 // Will match entries for Angra from before line 2010 OR
 // entries for Almah from after that
 ```
 
-<br><br>
+### Order
 
-## License
+You may also order the results by different properties.
 
-MIT
+```php
+$search = $file->search();
+
+$search->orderBy('content', 'ASC');
+// Order search results alphabetically.
+$search->orderBY('length', 'DESC');
+// Order results by the line's length decrescently .
+```
+
+
 
 <br><br>
 
@@ -284,3 +259,9 @@ Use composer.
 ```
 composer require adinan-cenci/file-editor
 ```
+
+<br><br>
+
+## License
+
+MIT

@@ -1,29 +1,32 @@
-<?php 
+<?php
+
 namespace AdinanCenci\FileEditor\Search\Condition;
 
 use AdinanCenci\FileEditor\Search\Condition\OrConditionGroup;
 
-class AndConditionGroup implements ConditionInterface, ConditionGroupInterface 
+class AndConditionGroup implements ConditionInterface, ConditionGroupInterface
 {
     /**
-     * @param ConditionInterface[] $conditions
+     * @param AdinanCenci\FileEditor\Search\Condition\ConditionInterface[] $conditions
+     *   Array of conditions.
      */
     protected array $conditions = [];
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function condition($property, $valueToCompare, string $operatorId = '=') : self
+    public function condition($propertyPath, $valueToCompare, string $operator = '='): ConditionGroupInterface
     {
-        $condition = new Condition($property, $valueToCompare, $operatorId);
+        $condition = new Condition($propertyPath, $valueToCompare, $operator);
         $this->conditions[] = $condition;
+
         return $this;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function evaluate($data) : bool
+    public function evaluate($data): bool
     {
         foreach ($this->conditions as $condition) {
             if (! $condition->evaluate($data)) {
@@ -35,9 +38,9 @@ class AndConditionGroup implements ConditionInterface, ConditionGroupInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function andConditionGroup() : AndConditionGroup
+    public function andConditionGroup(): AndConditionGroup
     {
         $group = new AndConditionGroup();
         $this->conditions[] = $group;
@@ -45,9 +48,9 @@ class AndConditionGroup implements ConditionInterface, ConditionGroupInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function orConditionGroup() : OrConditionGroup
+    public function orConditionGroup(): OrConditionGroup
     {
         $group = new OrConditionGroup();
         $this->conditions[] = $group;
