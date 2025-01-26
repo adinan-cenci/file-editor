@@ -70,9 +70,18 @@ class Order
     {
         list($property, $direction) = $criteria;
 
-        return $property == 'RAND()'
-            ? [$this, 'sortAtRandom']
+        return preg_match('#RAND\(([^\)]+)\)#', $property, $matches)
+            ? $this->sortRandomly($matches[1] ?? rand(1, 1000))
             : $this->sortByProperty($property, $direction);
+    }
+
+    protected function sortRandomly($seed)
+    {
+        return function ($item1, $item2) use ($seed): int {
+            $str1 = $item1 . $seed;
+            $str2 = $item2 . $seed;
+            return $this->compareStrings(md5($str1), md5($str2), 'ASC');
+        };
     }
 
     /**
