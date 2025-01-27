@@ -7,6 +7,7 @@ use AdinanCenci\FileEditor\Search\Condition\ConditionGroupInterface;
 use AdinanCenci\FileEditor\Search\Condition\AndConditionGroup;
 use AdinanCenci\FileEditor\Search\Condition\OrConditionGroup;
 use AdinanCenci\FileEditor\Search\Iterator\MetadataIterator;
+use AdinanCenci\FileEditor\Search\Order\Order;
 
 class Search implements ConditionGroupInterface
 {
@@ -23,7 +24,7 @@ class Search implements ConditionGroupInterface
     protected ConditionGroupInterface $mainConditionGroup;
 
     /**
-     * @var AdinanCenci\FileEditor\Search\Order;
+     * @var AdinanCenci\FileEditor\Search\Order\Order;
      *   Object to order the results.
      */
     protected Order $order;
@@ -63,7 +64,28 @@ class Search implements ConditionGroupInterface
     }
 
     /**
-     * Adds a new criteria to order the results by.
+     * Executes the search and returns the ordered results.
+     *
+     * @return AdinanCenci\FileEditor\Search\Iterator\MetadataWrapperInterface[]
+     *   An array of matching lines, each inside a metadata wrapper.
+     */
+    public function retrieveAndOrder(): array
+    {
+        $results = [];
+        $iterator = $this->getIterator();
+
+        foreach ($iterator as $line => $object) {
+            if ($object && $this->evaluate($object)) {
+                $results[ $line ] = $object;
+            }
+        }
+
+        $this->order->order($results);
+        return $results;
+    }
+
+    /**
+     * Adds a new criteria to order the results by a specified property.
      *
      * @param array|string $property
      *   The property to order by.
@@ -76,6 +98,22 @@ class Search implements ConditionGroupInterface
     public function orderBy(mixed $property, string $direction = 'ASC'): Search
     {
         $this->order->orderBy($property, $direction);
+        return $this;
+    }
+
+    /**
+     * Adds a new criteria to order the results randomly.
+     *
+     * @param null|string $seed
+     *   If informed, the seed will be used to order the results.
+     *   The items will be order the same every time.
+     *
+     * @return AdinanCenci\FileEditor\Search\Search
+     *   Return itself.
+     */
+    public function orderRandomly(?string $seed = null): Search
+    {
+        $this->order->orderRandomly($seed);
         return $this;
     }
 
@@ -121,26 +159,5 @@ class Search implements ConditionGroupInterface
     protected function getIterator(): \Iterator
     {
         return new MetadataIterator($this->file->fileName);
-    }
-
-    /**
-     * Executes the search and returns the ordered results.
-     *
-     * @return AdinanCenci\FileEditor\Search\Iterator\MetadataWrapperInterface[]
-     *   An array of matching lines, each inside a metadata wrapper.
-     */
-    protected function retrieveAndOrder(): array
-    {
-        $results = [];
-        $iterator = $this->getIterator();
-
-        foreach ($iterator as $line => $object) {
-            if ($object && $this->evaluate($object)) {
-                $results[ $line ] = $object;
-            }
-        }
-
-        $this->order->order($results);
-        return $results;
     }
 }
