@@ -33,13 +33,13 @@ class Search implements ConditionGroupInterface
      * @var callcable[]
      *   Array of callbacks to extract metadata from search results.
      */
-    protected array $metadataGetters = [];
+    protected array $metadataLazyGetters = [];
 
     /**
      * @var callcable[]
-     *   Array of callbacks to set metadata for search results.
+     *   Array of callbacks to extract metadata for search results.
      */
-    protected array $metadataSetters = [];
+    protected array $metadataEagerGetters = [];
 
     /**
      * Constructor.
@@ -57,18 +57,18 @@ class Search implements ConditionGroupInterface
             : new AndConditionGroup();
         $this->order = new Order();
 
-        $this->setMetadataSetter('length', function ($iterator) {
+        $this->setMetadataEagerGetter('length', function ($iterator) {
             return $iterator->currentContent
                 ? strlen($iterator->currentContent)
                 : 0;
         });
 
-        $this->setMetadataSetter('lineNumber', function ($iterator) {
+        $this->setMetadataEagerGetter('lineNumber', function ($iterator) {
             return $iterator->currentLine;
         });
 
         // Alias to lineNumber.
-        $this->setMetadataGetter('position', function ($dataWrapper) {
+        $this->setMetadataLazyGetter('position', function ($dataWrapper) {
             return $dataWrapper->metadata->lineNumber;
         });
     }
@@ -177,15 +177,15 @@ class Search implements ConditionGroupInterface
         return $this->mainConditionGroup->orConditionGroup();
     }
 
-    public function setMetadataGetter(string $property, mixed $callable)
+    public function setMetadataLazyGetter(string $property, mixed $callable)
     {
-        $this->metadataGetters[$property] = $callable;
+        $this->metadataLazyGetters[$property] = $callable;
         return $this;
     }
 
-    public function setMetadataSetter(string $property, mixed $callable)
+    public function setMetadataEagerGetter(string $property, mixed $callable)
     {
-        $this->metadataSetters[$property] = $callable;
+        $this->metadataEagerGetters[$property] = $callable;
         return $this;
     }
 
@@ -197,6 +197,6 @@ class Search implements ConditionGroupInterface
      */
     protected function getIterator(): \Iterator
     {
-        return new DataIterator($this->file->fileName, $this->metadataGetters, $this->metadataSetters);
+        return new DataIterator($this->file->fileName, $this->metadataEagerGetters, $this->metadataLazyGetters);
     }
 }

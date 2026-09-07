@@ -12,15 +12,15 @@ class Metadata implements MetadataInterface
      *
      * @param AdinanCenci\FileEditor\Search\Iterator\DataWrapperInterface $dataWrapper
      *   Data wrapper object.
-     * @param array $compiledMetadata
-     *   Compiled metadata.
-     * @param array $computedMetadata
+     * @param array $eagerMetadata
+     *   Eagerly compiled metadata.
+     * @param array $metadataLazyGetters
      *   Callbacks to retrieve metadata.
      */
     public function __construct(
         protected $dataWrapper,
-        protected array $compiledMetadata = [],
-        protected array $computedMetadata = []
+        protected array $eagerMetadata = [],
+        protected array $metadataLazyGetters = []
     ) {
     }
 
@@ -31,12 +31,12 @@ class Metadata implements MetadataInterface
 
     public function __get(string $data): mixed
     {
-        if (isset($this->compiledMetadata[$data])) {
-            return $this->compiledMetadata[$data];
+        if (isset($this->eagerMetadata[$data])) {
+            return $this->eagerMetadata[$data];
         }
 
-        return isset($this->computedMetadata[$data])
-            ? call_user_func($this->computedMetadata[$data], $this->dataWrapper)
+        return isset($this->metadataLazyGetters[$data])
+            ? call_user_func($this->metadataLazyGetters[$data], $this->dataWrapper)
             : null;
     }
 }

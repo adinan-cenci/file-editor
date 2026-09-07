@@ -14,15 +14,15 @@ class DataIterator extends FileIterator implements \Iterator
      *
      * @param string $fileName
      *   The absolute path to the file.
-     * @param array $metadataGetters
-     *   Array of callbacks to retrieve metadata.
-     * @param array $metadataSetters
-     *   Array of callbacks to set metadata.
+     * @param array $metadataEagerGetters
+     *   Array of callbacks to extract metadata for search results.
+     * @param array $metadataLazyGetters
+     *   Array of callbacks to extract metadata for search results.
      */
     public function __construct(
         protected string $fileName,
-        protected array $metadataGetters,
-        protected array $metadataSetters,
+        protected array $metadataEagerGetters,
+        protected array $metadataLazyGetters,
     ) {
     }
 
@@ -40,8 +40,8 @@ class DataIterator extends FileIterator implements \Iterator
 
         $dataWrapper = new DataWrapper(rtrim($this->currentContent, "\n"));
 
-        $compiledMetadata = $this->compileMetadata();
-        $metadata = new Metadata($dataWrapper, $compiledMetadata, $this->metadataGetters);
+        $eagerMetadata = $this->compileEagerMetadata();
+        $metadata = new Metadata($dataWrapper, $eagerMetadata, $this->metadataLazyGetters);
 
         $dataWrapper->setMetadata($metadata);
 
@@ -49,15 +49,15 @@ class DataIterator extends FileIterator implements \Iterator
     }
 
     /**
-     * Compiles metadata.
+     * Compiles eager metadata.
      *
      * @return array
      *   Compiled metadata.
      */
-    protected function compileMetadata(): array
+    protected function compileEagerMetadata(): array
     {
         $metadata = [];
-        foreach ($this->metadataSetters as $property => $callable) {
+        foreach ($this->metadataEagerGetters as $property => $callable) {
             $metadata[$property] = call_user_func($callable, $this);
         }
         return $metadata;
