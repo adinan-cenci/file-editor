@@ -39,15 +39,15 @@ class FileIterator implements \Iterator
 
     public function __get($var)
     {
-        if ($var == 'currentLine') {
-            return $this->currentLine;
-        }
+        return isset($this->{$var})
+            ? $this->{$var}
+            : null;
     }
 
     /**
      * \Iterator::current()
      */
-    public function current()
+    public function current(): mixed
     {
         if (! $this->getHandle()) {
             return null;
@@ -59,7 +59,7 @@ class FileIterator implements \Iterator
     /**
      * \Iterator::key()
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->currentLine;
     }

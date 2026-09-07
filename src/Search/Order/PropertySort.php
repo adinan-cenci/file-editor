@@ -2,7 +2,7 @@
 
 namespace AdinanCenci\FileEditor\Search\Order;
 
-use AdinanCenci\FileEditor\Search\Iterator\MetadataWrapperInterface;
+use AdinanCenci\FileEditor\Search\Iterator\DataWrapperInterface;
 
 class PropertySort implements SortCriteriaInterface
 {
@@ -35,7 +35,7 @@ class PropertySort implements SortCriteriaInterface
     /**
      * {@inheritdoc}
      */
-    public function sort(MetadataWrapperInterface $item1, MetadataWrapperInterface $item2): int
+    public function sort(DataWrapperInterface $item1, DataWrapperInterface $item2): int
     {
         $value1 = $item1->getValue($this->property);
         $value2 = $item2->getValue($this->property);

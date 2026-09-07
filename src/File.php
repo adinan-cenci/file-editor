@@ -15,18 +15,11 @@ use AdinanCenci\FileEditor\Search\Search;
 class File
 {
     /**
-     * @var string
-     *   Absolute path to the file.
-     */
-    protected string $fileName;
-
-    /**
      * @param string $fileName
      *   Absolute path to the file.
      */
-    public function __construct(string $fileName)
+    public function __construct(protected string $fileName)
     {
-        $this->fileName = $fileName;
     }
 
     /**

@@ -134,7 +134,7 @@ $results = $search->find();
 ### Equals operator
 
 ```php
-$search->condition('position', 10, '=');
+$search->condition(['@metadata', 'position'], 10, '=');
 // Will match the 11th line in the file.
 ```
 
@@ -171,11 +171,11 @@ It also supports "less than", "greater than", "less than or equal", "greater tha
 
 ```php
 $search
-  ->condition('position', 2022, '<')
-  ->condition('position', 1990, '>')
-  ->condition('position', 60, '<=')
-  ->condition('position', 18, '>=')
-  ->condition('length', [10, 50], 'BETWEEN');
+  ->condition(['@metadata', 'position'], 2022, '<')
+  ->condition(['@metadata', 'position'], 1990, '>')
+  ->condition(['@metadata', 'position'], 60, '<=')
+  ->condition(['@metadata', 'position'], 18, '>=')
+  ->condition(['@metadata', 'length'], [10, 50], 'BETWEEN');
 ```
 
 ### Negating conditions
@@ -186,7 +186,7 @@ You may also negate the conditions.
 $search
   ->condition('content', 'Iliad', '!=') // Different to ( case insensitive ).
   ->condition('content', ['Iliad', ' Odyssey'], 'NOT IN') // case insensitive.
-  ->condition('length', [10, 50], 'NOT BETWEEN')
+  ->condition(['@metadata', 'length'], [10, 50], 'NOT BETWEEN')
   ->condition('content', ['foo', 'bar'], 'UNLIKE');
 ```
 
@@ -199,7 +199,7 @@ By default all of the conditions must be met.
 $search = $file->search();
 $search
   ->condition('content', 'Iron Maiden', '=')
-  ->condition('position', 2000, '<');
+  ->condition(['@metadata', 'position'], 2000, '<');
 $results = $search->find();
 // Will match entries for Iron Maiden, before the line 2000.
 ```
@@ -224,11 +224,11 @@ $search = $file->search('OR');
 
 $search->andConditionGroup()
   ->condition('content', 'Angra', '=')
-  ->condition('position', 2010, '<');
+  ->condition(['@metadata', 'position'], 2010, '<');
 
 $search->andConditionGroup()
   ->condition('content', 'Almah', '=')
-  ->condition('position', 2010, '>');
+  ->condition(['@metadata', 'position'], 2010, '>');
 
 $results = $search->find();
 // Will match entries for Angra from before line 2010 OR
@@ -244,7 +244,7 @@ $search = $file->search();
 
 $search->orderBy('content', 'ASC');
 // Order search results alphabetically.
-$search->orderBY('length', 'DESC');
+$search->orderBY(['@metadata', 'length'], 'DESC');
 // Order results by the line's length decrescently .
 ```
 

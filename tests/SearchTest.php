@@ -12,7 +12,7 @@ class SearchTest extends Base
     {
         $file = new File('./tests/template-search.txt');
         $search = $file->search();
-        $search->condition('lineNumber', 3, '=');
+        $search->condition(['@metadata', 'lineNumber'], 3, '=');
         $results = $search->find();
         $this->assertEquals("And which of the gods was it that set them on to quarrel? ", $results[3]);
 
@@ -31,7 +31,7 @@ class SearchTest extends Base
         $file = new File('./tests/template-search.txt');
         $search = $file->search();
 
-        $search->condition('lineNumber', 30, '>');
+        $search->condition(['@metadata', 'lineNumber'], 30, '>');
 
         $results = $search->find();
 
@@ -43,7 +43,7 @@ class SearchTest extends Base
         $file = new File('./tests/template-search.txt');
         $search = $file->search();
 
-        $search->condition('lineNumber', 30, '>=');
+        $search->condition(['@metadata', 'lineNumber'], 30, '>=');
 
         $results = $search->find();
 
@@ -55,7 +55,7 @@ class SearchTest extends Base
         $file = new File('./tests/template-search.txt');
         $search = $file->search();
 
-        $search->condition('lineNumber', [-1, 3], 'BETWEEN');
+        $search->condition(['@metadata', 'lineNumber'], [-1, 3], 'BETWEEN');
 
         $results = $search->find();
 
@@ -67,7 +67,7 @@ class SearchTest extends Base
         $file = new File('./tests/template-search.txt');
         $search = $file->search();
 
-        $search->condition('lineNumber', [0, 2, 4, 6], 'IN');
+        $search->condition(['@metadata', 'lineNumber'], [0, 2, 4, 6], 'IN');
 
         $results = $search->find();
 
@@ -145,13 +145,13 @@ class SearchTest extends Base
 
         $search
             ->andConditionGroup()
-                ->condition('lineNumber', 0, '>')
-                ->condition('lineNumber', 2, '<');
+                ->condition(['@metadata', 'lineNumber'], 0, '>')
+                ->condition(['@metadata', 'lineNumber'], 2, '<');
 
         $search
             ->andConditionGroup()
-                ->condition('lineNumber', 6, '>')
-                ->condition('lineNumber', 8, '<');
+                ->condition(['@metadata', 'lineNumber'], 6, '>')
+                ->condition(['@metadata', 'lineNumber'], 8, '<');
 
         $results = $search->find();
 

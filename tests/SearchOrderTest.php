@@ -13,7 +13,7 @@ class SearchOrderTest extends Base
         $file = new File('./tests/template-search.txt');
 
         $search = $file->search();
-        $search->orderBy('length', 'ASC');
+        $search->orderBy(['@metadata', 'length'], 'ASC');
         $results = $search->find();
 
         $shortest = strlen(reset($results));

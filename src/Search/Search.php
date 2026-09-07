@@ -6,7 +6,7 @@ use AdinanCenci\FileEditor\File;
 use AdinanCenci\FileEditor\Search\Condition\ConditionGroupInterface;
 use AdinanCenci\FileEditor\Search\Condition\AndConditionGroup;
 use AdinanCenci\FileEditor\Search\Condition\OrConditionGroup;
-use AdinanCenci\FileEditor\Search\Iterator\MetadataIterator;
+use AdinanCenci\FileEditor\Search\Iterator\DataIterator;
 use AdinanCenci\FileEditor\Search\Order\Order;
 
 class Search implements ConditionGroupInterface
@@ -30,6 +30,18 @@ class Search implements ConditionGroupInterface
     protected Order $order;
 
     /**
+     * @var callcable[]
+     *   Array of callbacks to extract metadata from search results.
+     */
+    protected array $metadataGetters = [];
+
+    /**
+     * @var callcable[]
+     *   Array of callbacks to set metadata for search results.
+     */
+    protected array $metadataSetters = [];
+
+    /**
      * Constructor.
      *
      * @param AdinanCenci\FileEditor\File
@@ -44,6 +56,21 @@ class Search implements ConditionGroupInterface
             ? new OrConditionGroup()
             : new AndConditionGroup();
         $this->order = new Order();
+
+        $this->setMetadataSetter('length', function ($iterator) {
+            return $iterator->currentContent
+                ? strlen($iterator->currentContent)
+                : 0;
+        });
+
+        $this->setMetadataSetter('lineNumber', function ($iterator) {
+            return $iterator->currentLine;
+        });
+
+        // Alias to lineNumber.
+        $this->setMetadataGetter('position', function ($dataWrapper) {
+            return $dataWrapper->metadata->lineNumber;
+        });
     }
 
     /**
@@ -66,7 +93,7 @@ class Search implements ConditionGroupInterface
     /**
      * Executes the search and returns the ordered results.
      *
-     * @return AdinanCenci\FileEditor\Search\Iterator\MetadataWrapperInterface[]
+     * @return AdinanCenci\FileEditor\Search\Iterator\DataWrapperInterface[]
      *   An array of matching lines, each inside a metadata wrapper.
      */
     public function retrieveAndOrder(): array
@@ -150,14 +177,26 @@ class Search implements ConditionGroupInterface
         return $this->mainConditionGroup->orConditionGroup();
     }
 
+    public function setMetadataGetter(string $property, mixed $callable)
+    {
+        $this->metadataGetters[$property] = $callable;
+        return $this;
+    }
+
+    public function setMetadataSetter(string $property, mixed $callable)
+    {
+        $this->metadataSetters[$property] = $callable;
+        return $this;
+    }
+
     /**
      * Instantiate an iterator object.
      *
-     * @return AdinanCenci\FileEditor\Search\Iterator\MetadataIterator
+     * @return AdinanCenci\FileEditor\Search\Iterator\DataIterator
      *   The iterator object.
      */
     protected function getIterator(): \Iterator
     {
-        return new MetadataIterator($this->file->fileName);
+        return new DataIterator($this->file->fileName, $this->metadataGetters, $this->metadataSetters);
     }
 }
