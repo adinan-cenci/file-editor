@@ -209,17 +209,9 @@ class Search implements ConditionGroupInterface
             });
         }
 
-        if (
-            in_array(['@metadata', 'lineNumber'], $properties) ||
-            in_array(['@metadata', 'position'], $properties)
-        ) {
+        if (in_array(['@metadata', 'lineNumber'], $properties)) {
             $this->setMetadataEagerGetter('lineNumber', function ($iterator) {
                 return $iterator->currentLine;
-            });
-
-            // Alias to lineNumber.
-            $this->setMetadataLazyGetter('position', function ($dataWrapper) {
-                return $dataWrapper->metadata->lineNumber;
             });
         }
     }

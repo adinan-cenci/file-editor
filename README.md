@@ -134,7 +134,7 @@ $results = $search->find();
 ### Equals operator
 
 ```php
-$search->condition(['@metadata', 'position'], 10, '=');
+$search->condition(['@metadata', 'lineNumber'], 10, '=');
 // Will match the 11th line in the file.
 ```
 
@@ -171,10 +171,10 @@ It also supports "less than", "greater than", "less than or equal", "greater tha
 
 ```php
 $search
-  ->condition(['@metadata', 'position'], 2022, '<')
-  ->condition(['@metadata', 'position'], 1990, '>')
-  ->condition(['@metadata', 'position'], 60, '<=')
-  ->condition(['@metadata', 'position'], 18, '>=')
+  ->condition(['@metadata', 'lineNumber'], 2022, '<')
+  ->condition(['@metadata', 'lineNumber'], 1990, '>')
+  ->condition(['@metadata', 'lineNumber'], 60, '<=')
+  ->condition(['@metadata', 'lineNumber'], 18, '>=')
   ->condition(['@metadata', 'length'], [10, 50], 'BETWEEN');
 ```
 
@@ -199,7 +199,7 @@ By default all of the conditions must be met.
 $search = $file->search();
 $search
   ->condition('content', 'Iron Maiden', '=')
-  ->condition(['@metadata', 'position'], 2000, '<');
+  ->condition(['@metadata', 'lineNumber'], 2000, '<');
 $results = $search->find();
 // Will match entries for Iron Maiden, before the line 2000.
 ```
@@ -224,11 +224,11 @@ $search = $file->search('OR');
 
 $search->andConditionGroup()
   ->condition('content', 'Angra', '=')
-  ->condition(['@metadata', 'position'], 2010, '<');
+  ->condition(['@metadata', 'lineNumber'], 2010, '<');
 
 $search->andConditionGroup()
   ->condition('content', 'Almah', '=')
-  ->condition(['@metadata', 'position'], 2010, '>');
+  ->condition(['@metadata', 'lineNumber'], 2010, '>');
 
 $results = $search->find();
 // Will match entries for Angra from before line 2010 OR
