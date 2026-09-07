@@ -67,8 +67,6 @@ class Search implements ConditionGroupInterface
      */
     public function find(): array
     {
-        $this->registerBuiltInMetadataGetters();
-
         $results = $this->retrieveAndOrder();
         array_walk($results, function (&$item) {
             $item = $item->content;
@@ -86,6 +84,7 @@ class Search implements ConditionGroupInterface
     public function retrieveAndOrder(): array
     {
         $results = [];
+        $this->registerBuiltInMetadataGetters();
         $iterator = $this->getIterator();
 
         foreach ($iterator as $line => $object) {
