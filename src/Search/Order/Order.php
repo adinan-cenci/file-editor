@@ -72,28 +72,24 @@ class Order
     }
 
     /**
-     * Checks if a property has been specified in the condition group.
+     * Adds the groups properties to the array and returns it.
      *
-     * @param string|array $propertyPath
-     *   The property path.
+     * @param array $properties
+     *   Array of properties.
      *
-     * @return bool
-     *   True if it has.
+     * @return array
+     *   The array acumulated with the group's properties.
      */
-    public function propertySpecified($propertyPath): bool
+    public function accumulateProperties(array $properties = []): array
     {
-        $propertyPath = (array) $propertyPath;
-
         foreach ($this->criteria as $criterion) {
             if (!$criterion instanceof PropertySort) {
                 continue;
             }
 
-            if ($criterion->getPropertyPath() == $propertyPath) {
-                return true;
-            }
+            $properties[] = $criterion->getPropertyPath();
         }
 
-        return false;
+        return $properties;
     }
 }

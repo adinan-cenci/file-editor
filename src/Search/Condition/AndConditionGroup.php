@@ -60,21 +60,17 @@ class AndConditionGroup implements ConditionInterface, ConditionGroupInterface
     /**
      * {@inheritDoc}
      */
-    public function propertySpecified($propertyPath): bool
+    public function accumulateProperties(array $properties = []): array
     {
-        $propertyPath = (array) $propertyPath;
-
         foreach ($this->conditions as $condition) {
             $group = $condition instanceof ConditionGroupInterface;
-            if ($group && $condition->propertySpecified($propertyPath)) {
-                return true;
-            }
-
-            if (!$group && $condition->getPropertyPath() == $propertyPath) {
-                return true;
+            if ($group) {
+                $properties = $condition->accumulateProperties($properties);
+            } else {
+                $properties[] = $condition->getPropertyPath();
             }
         }
 
-        return false;
+        return $properties;
     }
 }

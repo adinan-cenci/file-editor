@@ -175,14 +175,12 @@ class Search implements ConditionGroupInterface
         return $this;
     }
 
-
-    public function propertySpecified($propertyPath): bool
+    public function accumulateProperties(array $properties = []): array
     {
-        if ($this->mainConditionGroup->propertySpecified($propertyPath)) {
-            return true;
-        }
+        $properties = $this->mainConditionGroup->accumulateProperties($properties);
+        $properties = $this->order->accumulateProperties($properties);
 
-        return $this->order->propertySpecified($propertyPath);
+        return $properties;
     }
 
     /**
@@ -201,7 +199,9 @@ class Search implements ConditionGroupInterface
      */
     protected function registerBuiltInMetadataGetters(): void
     {
-        if ($this->propertySpecified(['@metadata', 'length'])) {
+        $properties = $this->accumulateProperties();
+
+        if (in_array(['@metadata', 'length'], $properties)) {
             $this->setMetadataEagerGetter('length', function ($iterator) {
                 return $iterator->currentContent
                     ? strlen(rtrim($iterator->currentContent, "\n"))
@@ -210,8 +210,8 @@ class Search implements ConditionGroupInterface
         }
 
         if (
-            $this->propertySpecified(['@metadata', 'lineNumber']) ||
-            $this->propertySpecified(['@metadata', 'position'])
+            in_array(['@metadata', 'lineNumber'], $properties) ||
+            in_array(['@metadata', 'position'], $properties)
         ) {
             $this->setMetadataEagerGetter('lineNumber', function ($iterator) {
                 return $iterator->currentLine;
