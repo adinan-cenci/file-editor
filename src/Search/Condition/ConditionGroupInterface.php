@@ -34,4 +34,15 @@ interface ConditionGroupInterface extends ConditionInterface
      *   Returns the new condition group.
      */
     public function orConditionGroup(): ConditionGroupInterface;
+
+    /**
+     * Checks if a property has been specified in the condition group.
+     *
+     * @param string|array $propertyPath
+     *   The property path.
+     *
+     * @return bool
+     *   True if it has.
+     */
+    public function propertySpecified($propertyPath): bool;
 }

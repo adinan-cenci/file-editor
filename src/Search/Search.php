@@ -56,21 +56,6 @@ class Search implements ConditionGroupInterface
             ? new OrConditionGroup()
             : new AndConditionGroup();
         $this->order = new Order();
-
-        $this->setMetadataEagerGetter('length', function ($iterator) {
-            return $iterator->currentContent
-                ? strlen($iterator->currentContent)
-                : 0;
-        });
-
-        $this->setMetadataEagerGetter('lineNumber', function ($iterator) {
-            return $iterator->currentLine;
-        });
-
-        // Alias to lineNumber.
-        $this->setMetadataLazyGetter('position', function ($dataWrapper) {
-            return $dataWrapper->metadata->lineNumber;
-        });
     }
 
     /**
@@ -82,6 +67,8 @@ class Search implements ConditionGroupInterface
      */
     public function find(): array
     {
+        $this->registerBuiltInMetadataGetters();
+
         $results = $this->retrieveAndOrder();
         array_walk($results, function (&$item) {
             $item = $item->content;
@@ -189,6 +176,16 @@ class Search implements ConditionGroupInterface
         return $this;
     }
 
+
+    public function propertySpecified($propertyPath): bool
+    {
+        if ($this->mainConditionGroup->propertySpecified($propertyPath)) {
+            return true;
+        }
+
+        return $this->order->propertySpecified($propertyPath);
+    }
+
     /**
      * Instantiate an iterator object.
      *
@@ -198,5 +195,33 @@ class Search implements ConditionGroupInterface
     protected function getIterator(): \Iterator
     {
         return new DataIterator($this->file->fileName, $this->metadataEagerGetters, $this->metadataLazyGetters);
+    }
+
+    /**
+     * Adds built-in metadata getters.
+     */
+    protected function registerBuiltInMetadataGetters(): void
+    {
+        if ($this->propertySpecified(['@metadata', 'length'])) {
+            $this->setMetadataEagerGetter('length', function ($iterator) {
+                return $iterator->currentContent
+                    ? strlen($iterator->currentContent)
+                    : 0;
+            });
+        }
+
+        if (
+            $this->propertySpecified(['@metadata', 'lineNumber']) ||
+            $this->propertySpecified(['@metadata', 'position'])
+        ) {
+            $this->setMetadataEagerGetter('lineNumber', function ($iterator) {
+                return $iterator->currentLine;
+            });
+
+            // Alias to lineNumber.
+            $this->setMetadataLazyGetter('position', function ($dataWrapper) {
+                return $dataWrapper->metadata->lineNumber;
+            });
+        }
     }
 }

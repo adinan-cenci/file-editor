@@ -70,4 +70,30 @@ class Order
             uasort($results, [$criteria, 'sort']);
         }
     }
+
+    /**
+     * Checks if a property has been specified in the condition group.
+     *
+     * @param string|array $propertyPath
+     *   The property path.
+     *
+     * @return bool
+     *   True if it has.
+     */
+    public function propertySpecified($propertyPath): bool
+    {
+        $propertyPath = (array) $propertyPath;
+
+        foreach ($this->criteria as $criterion) {
+            if (!$criterion instanceof PropertySort) {
+                continue;
+            }
+
+            if ($criterion->getPropertyPath() == $propertyPath) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

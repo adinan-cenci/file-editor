@@ -61,6 +61,17 @@ class Condition implements ConditionInterface
     }
 
     /**
+     * Returns the property path.
+     *
+     * @return array
+     *   The property path.
+     */
+    public function getPropertyPath(): array
+    {
+        return $this->propertyPath;
+    }
+
+    /**
      * Retrieves the value we want from $data, given the path.
      *
      * @param array|\stdClass $data

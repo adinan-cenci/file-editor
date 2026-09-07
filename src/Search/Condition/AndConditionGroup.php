@@ -56,4 +56,25 @@ class AndConditionGroup implements ConditionInterface, ConditionGroupInterface
         $this->conditions[] = $group;
         return $group;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function propertySpecified($propertyPath): bool
+    {
+        $propertyPath = (array) $propertyPath;
+
+        foreach ($this->conditions as $condition) {
+            $group = $condition instanceof ConditionGroupInterface;
+            if ($group && $condition->propertySpecified($propertyPath)) {
+                return true;
+            }
+
+            if (!$group && $condition->getPropertyPath() == $propertyPath) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

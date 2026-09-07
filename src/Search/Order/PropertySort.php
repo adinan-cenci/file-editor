@@ -10,7 +10,7 @@ class PropertySort implements SortCriteriaInterface
      * @var array
      *   The property to order by.
      */
-    protected array $property;
+    protected array $propertyPath;
 
     /**
      * @var string
@@ -21,14 +21,14 @@ class PropertySort implements SortCriteriaInterface
     /**
      * Constructor.
      *
-     * @param array|string $property
+     * @param array|string $propertyPath
      *   The property to order by.
      * @param string $direction
      *   Ascending or descending.
      */
-    public function __construct(mixed $property, string $direction = 'ASC')
+    public function __construct(mixed $propertyPath, string $direction = 'ASC')
     {
-        $this->property = (array) $property;
+        $this->propertyPath = (array) $propertyPath;
         $this->direction = $direction;
     }
 
@@ -37,9 +37,20 @@ class PropertySort implements SortCriteriaInterface
      */
     public function sort(DataWrapperInterface $item1, DataWrapperInterface $item2): int
     {
-        $value1 = $item1->getValue($this->property);
-        $value2 = $item2->getValue($this->property);
+        $value1 = $item1->getValue($this->propertyPath);
+        $value2 = $item2->getValue($this->propertyPath);
 
         return Compare::compare($value1, $value2, $this->direction);
+    }
+
+    /**
+     * Returns the property path.
+     *
+     * @return array
+     *   The property path.
+     */
+    public function getPropertyPath(): array
+    {
+        return $this->propertyPath;
     }
 }
