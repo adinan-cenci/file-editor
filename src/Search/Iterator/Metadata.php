@@ -31,7 +31,7 @@ class Metadata implements MetadataInterface
 
     public function __get(string $data): mixed
     {
-        if (isset($this->eagerMetadata[$data])) {
+        if (array_key_exists($data, $this->eagerMetadata)) {
             return $this->eagerMetadata[$data];
         }
 

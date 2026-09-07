@@ -42,7 +42,7 @@ interface ConditionGroupInterface extends ConditionInterface
      *   Array of properties.
      *
      * @return array
-     *   The array acumulated with the group's properties.
+     *   The array accumulated with the group's properties.
      */
     public function accumulateProperties(array $properties = []): array;
 }
