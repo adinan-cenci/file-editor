@@ -21,8 +21,8 @@ class DataIterator extends FileIterator implements \Iterator
      */
     public function __construct(
         protected string $filename,
-        protected array $metadataEagerGetters,
-        protected array $metadataLazyGetters,
+        protected array $metadataEagerGetters = [],
+        protected array $metadataLazyGetters = [],
     ) {
         parent::__construct($filename);
     }
