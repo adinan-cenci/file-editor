@@ -10,10 +10,10 @@ final class CrudTest extends Base
 {
     public function testMultipleOperationsAtOnce()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        $this->resetTest($fileName);
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($filename);
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $crud = $file->crud();
         $crud
             ->add([0 => 'Dark Moor']) // Dark Moor added to the beginning

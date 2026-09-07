@@ -17,7 +17,7 @@ class Crud
      * @var string
      *   Absolute path to the file.
      */
-    protected string $fileName = '';
+    protected string $filename = '';
 
     /**
      * @var AdinanCenci\FileEditor\FileIterator
@@ -88,12 +88,12 @@ class Crud
     /**
      * Constructor.
      *
-     * @param string $fileName
+     * @param string $filename
      *   Absolute path to the file.
      */
-    public function __construct(string $fileName)
+    public function __construct(string $filename)
     {
-        $this->fileName = $fileName;
+        $this->filename = $filename;
     }
 
     public function __get(string $propertyName)
@@ -153,7 +153,7 @@ class Crud
      */
     public function set(array $lines): self
     {
-        if (file_exists($this->fileName)) {
+        if (file_exists($this->filename)) {
             $this->linesToDelete = array_merge($this->linesToDelete, array_keys($lines));
         }
         $this->linesToAdd += $lines;
@@ -199,7 +199,7 @@ class Crud
 
     protected function prepare(): void
     {
-        $this->iterator  = new FileIterator($this->fileName);
+        $this->iterator  = new FileIterator($this->filename);
 
         $this->lastLineToBeAdd = $this->linesToAdd
             ? max(array_keys($this->linesToAdd))
@@ -319,11 +319,11 @@ class Crud
 
         fclose($this->tempFileResource);
 
-        if (file_exists($this->fileName)) {
-            unlink($this->fileName);
+        if (file_exists($this->filename)) {
+            unlink($this->filename);
         }
 
-        rename($this->tempFileName, $this->fileName);
+        rename($this->tempFileName, $this->filename);
     }
 
     protected function getNumberOfLinesToProcess(): int
@@ -335,7 +335,7 @@ class Crud
         }
 
         return max(
-            File::getLastLine($this->fileName, true) - 1,
+            File::getLastLine($this->filename, true) - 1,
             $this->linesToGet ? max($this->linesToGet) : 0,
             $this->linesToAdd ? max(array_keys($this->linesToAdd)) : 0
         );
@@ -380,7 +380,7 @@ class Crud
      */
     protected function validateFileForWriting(): void
     {
-        $dir = dirname($this->fileName) . '/';
+        $dir = dirname($this->filename) . '/';
 
         if (! file_exists($dir)) {
             throw new DirectoryDoesNotExist($dir);
@@ -390,8 +390,8 @@ class Crud
             throw new DirectoryIsNotWritable($dir);
         }
 
-        if (file_exists($this->fileName) && !is_writable($this->fileName)) {
-            throw new FileIsNotWritable($this->fileName);
+        if (file_exists($this->filename) && !is_writable($this->filename)) {
+            throw new FileIsNotWritable($this->filename);
         }
     }
 
@@ -402,12 +402,12 @@ class Crud
      */
     protected function validateFileForReading(): void
     {
-        if (! file_exists($this->fileName)) {
-            throw new FileDoesNotExist($this->fileName);
+        if (! file_exists($this->filename)) {
+            throw new FileDoesNotExist($this->filename);
         }
 
-        if (! is_readable($this->fileName)) {
-            throw new FileIsNotReadable($this->fileName);
+        if (! is_readable($this->filename)) {
+            throw new FileIsNotReadable($this->filename);
         }
     }
 
@@ -418,12 +418,12 @@ class Crud
      */
     protected function validateFileForDeleting(): void
     {
-        if (! file_exists($this->fileName)) {
-            throw new FileDoesNotExist($this->fileName);
+        if (! file_exists($this->filename)) {
+            throw new FileDoesNotExist($this->filename);
         }
 
-        if (! is_writable($this->fileName)) {
-            throw new FileIsNotWritable($this->fileName);
+        if (! is_writable($this->filename)) {
+            throw new FileIsNotWritable($this->filename);
         }
     }
 

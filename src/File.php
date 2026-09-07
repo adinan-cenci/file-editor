@@ -5,7 +5,7 @@ namespace AdinanCenci\FileEditor;
 use AdinanCenci\FileEditor\Search\Search;
 
 /**
- * @property string $fileName
+ * @property string $filename
  *   The filename.
  * @property AdinanCenci\FileEditor\FileIterator $lines
  *   Iterator object to read the file line by line.
@@ -15,10 +15,10 @@ use AdinanCenci\FileEditor\Search\Search;
 class File
 {
     /**
-     * @param string $fileName
+     * @param string $filename
      *   Absolute path to the file.
      */
-    public function __construct(protected string $fileName)
+    public function __construct(protected string $filename)
     {
     }
 
@@ -34,9 +34,9 @@ class File
             case 'lines':
                 return $this->lines();
                 break;
-            case 'fileName':
             case 'filename':
-                return $this->fileName;
+            case 'fileName':
+                return $this->filename;
                 break;
             case 'lineCount':
                 return $this->countLines();
@@ -55,7 +55,7 @@ class File
      */
     public function lines(): \Iterator
     {
-        return new FileIterator($this->fileName);
+        return new FileIterator($this->filename);
     }
 
     /**
@@ -287,7 +287,7 @@ class File
      */
     public function crud(): Crud
     {
-        return new Crud($this->fileName);
+        return new Crud($this->filename);
     }
 
     /**
@@ -301,7 +301,7 @@ class File
      */
     public function countLines(&$lastNonEmptyLine = null): int
     {
-        return self::countLinesOnFile($this->fileName, $lastNonEmptyLine);
+        return self::countLinesOnFile($this->filename, $lastNonEmptyLine);
     }
 
     /**
@@ -315,13 +315,13 @@ class File
      */
     public function nameLastLine(bool $ignoreEmptyLines = false): int
     {
-        return self::getLastLine($this->fileName, $ignoreEmptyLines);
+        return self::getLastLine($this->filename, $ignoreEmptyLines);
     }
 
     /**
      * Returns the last line of the specified file.
      *
-     * @param string $fileName
+     * @param string $filename
      *   Absolute path to the file.
      * @param bool $ignoreEmptyLines
      *   If true, the method will return the last non-empty line.
@@ -329,9 +329,9 @@ class File
      * @return int
      *   The last line.
      */
-    public static function getLastLine(string $fileName, bool $ignoreEmptyLines = false): int
+    public static function getLastLine(string $filename, bool $ignoreEmptyLines = false): int
     {
-        $lastLine = self::countLinesOnFile($fileName, $lastNonEmptyLine);
+        $lastLine = self::countLinesOnFile($filename, $lastNonEmptyLine);
         return $ignoreEmptyLines && $lastNonEmptyLine !== null
             ? $lastNonEmptyLine
             : $lastLine;
@@ -340,7 +340,7 @@ class File
     /**
      * Counts how many lines there is in a file.
      *
-     * @param string $fileName
+     * @param string $filename
      *   Absolute path to the file.
      *
      * @param null|int $lastNonEmptyLine
@@ -349,13 +349,13 @@ class File
      * @return int
      *   The number of lines in the file.
      */
-    public static function countLinesOnFile(string $fileName, &$lastNonEmptyLine = null): int
+    public static function countLinesOnFile(string $filename, &$lastNonEmptyLine = null): int
     {
-        if (! file_exists($fileName)) {
+        if (! file_exists($filename)) {
             return 0;
         }
 
-        $handle = fopen($fileName, 'r');
+        $handle = fopen($filename, 'r');
         $lineCount = 1;
         $lastNonEmptyLine = null;
 

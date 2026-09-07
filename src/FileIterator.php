@@ -8,7 +8,7 @@ class FileIterator implements \Iterator
      * @var string
      *   The absolute path to the file.
      */
-    protected string $fileName = '';
+    protected string $filename = '';
 
     /**
      * @var resource
@@ -29,12 +29,12 @@ class FileIterator implements \Iterator
     protected int $currentLine = 0;
 
     /**
-     * @param string $fileName
+     * @param string $filename
      *   The absolute path to the file.
      */
-    public function __construct(string $fileName)
+    public function __construct(string $filename)
     {
-        $this->fileName = $fileName;
+        $this->filename = $filename;
     }
 
     public function __get($var)
@@ -91,7 +91,7 @@ class FileIterator implements \Iterator
         }
 
         fclose($this->handle);
-        $this->handle = fopen($this->fileName, 'r');
+        $this->handle = fopen($this->filename, 'r');
         $this->currentContent = fgets($this->handle);
         $this->currentLine = 0;
     }
@@ -126,10 +126,10 @@ class FileIterator implements \Iterator
             return $this->handle;
         }
 
-        if (! file_exists($this->fileName)) {
+        if (! file_exists($this->filename)) {
             return false;
         }
 
-        return $this->handle = fopen($this->fileName, 'r');
+        return $this->handle = fopen($this->filename, 'r');
     }
 }

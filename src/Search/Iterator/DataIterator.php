@@ -12,7 +12,7 @@ class DataIterator extends FileIterator implements \Iterator
     /**
      * Constructor.
      *
-     * @param string $fileName
+     * @param string $filename
      *   The absolute path to the file.
      * @param array $metadataEagerGetters
      *   Array of callbacks to extract metadata for search results.
@@ -20,7 +20,7 @@ class DataIterator extends FileIterator implements \Iterator
      *   Array of callbacks to extract metadata for search results.
      */
     public function __construct(
-        protected string $fileName,
+        protected string $filename,
         protected array $metadataEagerGetters,
         protected array $metadataLazyGetters,
     ) {

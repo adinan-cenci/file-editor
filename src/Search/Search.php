@@ -191,7 +191,7 @@ class Search implements ConditionGroupInterface
      */
     protected function getIterator(): \Iterator
     {
-        return new DataIterator($this->file->fileName, $this->metadataEagerGetters, $this->metadataLazyGetters);
+        return new DataIterator($this->file->filename, $this->metadataEagerGetters, $this->metadataLazyGetters);
     }
 
     /**

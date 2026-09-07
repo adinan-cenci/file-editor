@@ -10,10 +10,10 @@ final class AddTest extends Base
 {
     public function testAddSingleLine()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        $this->resetTest($fileName);
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($filename);
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $file->addLine('Elvenking');
 
         $lastLine = $file->getLine(16);
@@ -22,10 +22,10 @@ final class AddTest extends Base
 
     public function testAddMultipleLinesToTheEndOfTheFile()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        $this->resetTest($fileName);
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($filename);
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $file->addLines(['[16] Vis Mystica', '[17] Hammer King'], true);
 
         $lines = $file->getLines([16, 17]);
@@ -34,10 +34,10 @@ final class AddTest extends Base
 
     public function testAddMultipleLinesToTheEndOfTheFileWithBlankLinesAtTheEnd()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        $this->resetTest($fileName, './tests/template-2.txt');
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($filename, './tests/template-2.txt');
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $file->addLines(['[16] Vis Mystica', '[17] Hammer King'], true);
 
         $lines = $file->getLines([16, 17]);
@@ -46,10 +46,10 @@ final class AddTest extends Base
 
     public function testAddMultipleLines()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        $this->resetTest($fileName);
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($filename);
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $file->addLines([5 => 'Vis Mystica', 8 => 'Hammer King'], false);
 
         $lines = $file->getLines([5, 8]);
@@ -58,10 +58,10 @@ final class AddTest extends Base
 
     public function testAddPastEndOfTheFile()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        $this->resetTest($fileName);
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($filename);
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $file->addLine('Elvenking', 25);
 
         $lastLine = $file->getLine(25);
@@ -70,10 +70,10 @@ final class AddTest extends Base
 
     public function testAddLinesWithGaps()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        $this->resetTest($fileName, '');
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($filename, '');
 
-        $file = new File($fileName);
+        $file = new File($filename);
 
         $file->addLines([
             0 => 'Dreamtale',
@@ -89,12 +89,12 @@ final class AddTest extends Base
 
     public function testCreateFromScratch()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        if (file_exists($fileName)) {
-            unlink($fileName);
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        if (file_exists($filename)) {
+            unlink($filename);
         }
 
-        $file = new File($fileName);
+        $file = new File($filename);
 
         $file->addLines(['first', 'second', 'third', '', 'fifth']);
 
