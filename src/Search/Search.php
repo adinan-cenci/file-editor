@@ -205,7 +205,7 @@ class Search implements ConditionGroupInterface
         if ($this->propertySpecified(['@metadata', 'length'])) {
             $this->setMetadataEagerGetter('length', function ($iterator) {
                 return $iterator->currentContent
-                    ? strlen($iterator->currentContent)
+                    ? strlen(rtrim($iterator->currentContent, "\n"))
                     : 0;
             });
         }
