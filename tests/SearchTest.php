@@ -157,4 +157,34 @@ class SearchTest extends Base
 
         $this->assertEquals([1, 7], array_keys($results));
     }
+
+    public function testCustomLazyMetadataGetter()
+    {
+        $file = new File('./tests/template-search.txt');
+        $search = $file->search();
+        $search->condition(['@metadata', 'wordCount'], 30, '>');
+
+        $search->setMetadataLazyGetter('wordCount', function ($dataWrapper) {
+            return substr_count($dataWrapper->content, ' ');
+        });
+
+        $results = $search->find();
+
+        $this->assertEquals([18, 21, 26], array_keys($results));
+    }
+
+    public function testCustomEagerMetadataGetter()
+    {
+        $file = new File('./tests/template-search.txt');
+        $search = $file->search();
+        $search->condition(['@metadata', 'evenLine'], true);
+
+        $search->setMetadataEagerGetter('evenLine', function ($iterator, $dataWrapper) {
+            return $iterator->currentLine == 0 || $iterator->currentLine % 2 == 0;
+        });
+
+        $results = $search->find();
+
+        $this->assertEquals([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32], array_keys($results));
+    }
 }
