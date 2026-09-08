@@ -32,14 +32,18 @@ class Search implements ConditionGroupInterface
     /**
      * @var callcable[]
      *   Array of callbacks to extract metadata from search results.
+     *   They will receive the data being iterated upon, from which they will
+     *   extract information. Eager getters execute when iterated upon.
      */
-    protected array $metadataLazyGetters = [];
+    protected array $metadataEagerGetters = [];
 
     /**
      * @var callcable[]
-     *   Array of callbacks to extract metadata for search results.
+     *   Array of callbacks to extract metadata from search results.
+     *   They will receive the data being iterated upon, from which they will
+     *   extract information. Lazy getters execute when called.
      */
-    protected array $metadataEagerGetters = [];
+    protected array $metadataLazyGetters = [];
 
     /**
      * Constructor.
@@ -163,24 +167,41 @@ class Search implements ConditionGroupInterface
         return $this->mainConditionGroup->orConditionGroup();
     }
 
-    public function setMetadataLazyGetter(string $property, mixed $callable)
+    /**
+     * {@inheritdoc}
+     */
+    public function accumulateProperties(array &$properties = []): void
     {
-        $this->metadataLazyGetters[$property] = $callable;
-        return $this;
+        $this->mainConditionGroup->accumulateProperties($properties);
+        $this->order->accumulateProperties($properties);
     }
 
+    /**
+     * Register a eager metadata getter.
+     *
+     * @param string $property
+     *   The metadata name.
+     * @param callable $callable
+     *   A closure.
+     */
     public function setMetadataEagerGetter(string $property, mixed $callable)
     {
         $this->metadataEagerGetters[$property] = $callable;
         return $this;
     }
 
-    public function accumulateProperties(array $properties = []): array
+    /**
+     * Register a lazy metadata getter.
+     *
+     * @param string $property
+     *   The metadata name.
+     * @param callable $callable
+     *   A closure.
+     */
+    public function setMetadataLazyGetter(string $property, mixed $callable)
     {
-        $properties = $this->mainConditionGroup->accumulateProperties($properties);
-        $properties = $this->order->accumulateProperties($properties);
-
-        return $properties;
+        $this->metadataLazyGetters[$property] = $callable;
+        return $this;
     }
 
     /**
@@ -195,14 +216,17 @@ class Search implements ConditionGroupInterface
     }
 
     /**
-     * Adds built-in metadata getters.
+     * Registers built-in metadata getters.
+     *
+     * Also serves as example of how to use them.
      */
     protected function registerBuiltInMetadataGetters(): void
     {
-        $properties = $this->accumulateProperties();
+        $properties = [];
+        $this->accumulateProperties($properties);
 
         if (in_array(['@metadata', 'length'], $properties)) {
-            $this->setMetadataEagerGetter('length', function ($iterator) {
+            $this->setMetadataEagerGetter('length', function ($iterator, $dataWrapper) {
                 return $iterator->currentContent
                     ? strlen(rtrim($iterator->currentContent, "\n"))
                     : 0;
@@ -210,7 +234,7 @@ class Search implements ConditionGroupInterface
         }
 
         if (in_array(['@metadata', 'lineNumber'], $properties)) {
-            $this->setMetadataEagerGetter('lineNumber', function ($iterator) {
+            $this->setMetadataEagerGetter('lineNumber', function ($iterator, $dataWrapper) {
                 return $iterator->currentLine;
             });
         }

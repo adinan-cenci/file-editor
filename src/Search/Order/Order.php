@@ -76,11 +76,8 @@ class Order
      *
      * @param array $properties
      *   Array of properties.
-     *
-     * @return array
-     *   The array acumulated with the group's properties.
      */
-    public function accumulateProperties(array $properties = []): array
+    public function accumulateProperties(array &$properties = []): void
     {
         foreach ($this->criteria as $criterion) {
             if (!$criterion instanceof PropertySort) {
@@ -89,7 +86,5 @@ class Order
 
             $properties[] = $criterion->getPropertyPath();
         }
-
-        return $properties;
     }
 }

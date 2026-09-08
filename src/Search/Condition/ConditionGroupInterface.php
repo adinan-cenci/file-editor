@@ -36,13 +36,10 @@ interface ConditionGroupInterface extends ConditionInterface
     public function orConditionGroup(): ConditionGroupInterface;
 
     /**
-     * Adds the groups properties to the array and returns it.
+     * Adds the properties of the conditions to the array.
      *
      * @param array $properties
      *   Array of properties.
-     *
-     * @return array
-     *   The array accumulated with the group's properties.
      */
-    public function accumulateProperties(array $properties = []): array;
+    public function accumulateProperties(array &$properties = []): void;
 }

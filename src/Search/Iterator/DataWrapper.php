@@ -3,7 +3,7 @@
 namespace AdinanCenci\FileEditor\Search\Iterator;
 
 /**
- * Wrapper to extract metadata from the subject of our search.
+ * Wrapper to inspect the data being iterated upon.
  */
 class DataWrapper implements DataWrapperInterface
 {

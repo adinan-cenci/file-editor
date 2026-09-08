@@ -41,7 +41,7 @@ class DataIterator extends FileIterator implements \Iterator
 
         $dataWrapper = new DataWrapper(rtrim($this->currentContent, "\n"));
 
-        $eagerMetadata = $this->compileEagerMetadata();
+        $eagerMetadata = $this->compileEagerMetadata($dataWrapper);
         $metadata = new Metadata($dataWrapper, $eagerMetadata, $this->metadataLazyGetters);
 
         $dataWrapper->setMetadata($metadata);
@@ -55,11 +55,11 @@ class DataIterator extends FileIterator implements \Iterator
      * @return array
      *   Compiled metadata.
      */
-    protected function compileEagerMetadata(): array
+    protected function compileEagerMetadata(DataWrapperInterface $dataWrapper): array
     {
         $metadata = [];
         foreach ($this->metadataEagerGetters as $property => $callable) {
-            $metadata[$property] = call_user_func($callable, $this);
+            $metadata[$property] = call_user_func($callable, $this, $dataWrapper);
         }
         return $metadata;
     }

@@ -15,7 +15,7 @@ class Metadata implements MetadataInterface
      * @param array $eagerMetadata
      *   Eagerly compiled metadata.
      * @param array $metadataLazyGetters
-     *   Callbacks to retrieve metadata.
+     *   Lazyly generated metadata.
      */
     public function __construct(
         protected $dataWrapper,
