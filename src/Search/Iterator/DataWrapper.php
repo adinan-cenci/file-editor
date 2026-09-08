@@ -8,7 +8,7 @@ namespace AdinanCenci\FileEditor\Search\Iterator;
 class DataWrapper implements DataWrapperInterface
 {
     /**
-     * @var AdinanCenci\FileEditor\Search\Iterator\MetadataInterface
+     * @var null|AdinanCenci\FileEditor\Search\Iterator\MetadataInterface
      *   Metadata object.
      */
     protected ?MetadataInterface $metadata;
@@ -84,7 +84,7 @@ class DataWrapper implements DataWrapperInterface
     public function getValue($propertyPath)
     {
         $propertyPath = (array) $propertyPath;
-        $data = $this;
+        $data = $this->getRootOfTheValue();
 
         foreach ($propertyPath as $part) {
             if ($part == '@metadata' && $this->metadata) {
@@ -97,5 +97,13 @@ class DataWrapper implements DataWrapperInterface
         }
 
         return $data;
+    }
+
+    /**
+     * Returns the root we'll use to retrieve values.
+     */
+    protected function getRootOfTheValue(): mixed
+    {
+        return $this;
     }
 }
