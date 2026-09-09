@@ -258,7 +258,7 @@ In previous examples we used the two built-in metadata provided by the library:
 Custom metadata can be defined by invoking `::setMetadataEagerGetter()` and 
 `::setMetadataLazyGetter()`, making them available to our search.
 
-Naturally, metadata must be defined before calling `::find()`.
+Naturally, the metadata must be defined before calling `::find()`.
 
 Lazy getters are invoked as needed during evaluation in the search loop.
 
