@@ -248,7 +248,39 @@ $search->orderBY(['@metadata', 'length'], 'DESC');
 // Order results by the line's length decrescently .
 ```
 
+## Metadata
 
+Lastly we have metadata. Adjacent information that can be used in our search.
+
+In previous examples we used the two built-in metadata provided by the library: 
+`['@metadata', 'lineNumber']` and `['@metadata', 'length']`.
+
+Custom metadata getters can be defined before calling `::find()` by invoking 
+`::setMetadataEagerGetter()` and `::setMetadataLazyGetter()`.
+
+Lazy getters are invoked as needed during evaluation in the search loop.
+
+Eager getters are always invoked during the search loop.
+
+Some examples:
+
+This will register the `['@metadata', 'evenLine']` metadata, allowing us to 
+filter only even lines.
+
+```php
+$search->setMetadataEagerGetter('evenLine', function ($iterator, $dataWrapper) {
+  return $iterator->currentLine == 0 || $iterator->currentLine % 2 == 0;
+});
+```
+
+Another, this will register the `['@metadata', 'wordCount']` metadata, allowing 
+us to filter by the number of words in a given line.
+
+```php
+$search->setMetadataLazyGetter('wordCount', function ($dataWrapper) {
+  return substr_count($dataWrapper->content, ' ');
+});
+```
 
 <br><br>
 
