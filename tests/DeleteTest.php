@@ -10,10 +10,10 @@ final class DeleteTest extends Base
 {
     public function testDeleteSingleLine()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        $this->resetTest($fileName);
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($filename);
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $file->deleteLine(2);
 
         $third = $file->getLine(2);
@@ -22,10 +22,10 @@ final class DeleteTest extends Base
 
     public function testDeleteMultipleLines()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        $this->resetTest($fileName);
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($filename);
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $file->deleteLines([5, 8]);
 
         $lines = $file->getLines([5, 8]);

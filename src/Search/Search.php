@@ -6,10 +6,10 @@ use AdinanCenci\FileEditor\File;
 use AdinanCenci\FileEditor\Search\Condition\ConditionGroupInterface;
 use AdinanCenci\FileEditor\Search\Condition\AndConditionGroup;
 use AdinanCenci\FileEditor\Search\Condition\OrConditionGroup;
-use AdinanCenci\FileEditor\Search\Iterator\MetadataIterator;
+use AdinanCenci\FileEditor\Search\Iterator\DataIterator;
 use AdinanCenci\FileEditor\Search\Order\Order;
 
-class Search implements ConditionGroupInterface
+class Search implements SearchInterface
 {
     /**
      * @var AdinanCenci\FileEditor\File
@@ -30,6 +30,22 @@ class Search implements ConditionGroupInterface
     protected Order $order;
 
     /**
+     * @var callcable[]
+     *   Array of callbacks to extract metadata from search results.
+     *   They will receive the data being iterated upon, from which they will
+     *   extract information. Eager getters execute when iterated upon.
+     */
+    protected array $metadataEagerGetters = [];
+
+    /**
+     * @var callcable[]
+     *   Array of callbacks to extract metadata from search results.
+     *   They will receive the data being iterated upon, from which they will
+     *   extract information. Lazy getters execute when called.
+     */
+    protected array $metadataLazyGetters = [];
+
+    /**
      * Constructor.
      *
      * @param AdinanCenci\FileEditor\File
@@ -47,11 +63,7 @@ class Search implements ConditionGroupInterface
     }
 
     /**
-     * Executes the search and returns the ordered results.
-     *
-     * @return string[]
-     *   The lines of the file that match our criteria, indexed by their
-     *   position in the file.
+     * {@inheritdoc}
      */
     public function find(): array
     {
@@ -64,14 +76,12 @@ class Search implements ConditionGroupInterface
     }
 
     /**
-     * Executes the search and returns the ordered results.
-     *
-     * @return AdinanCenci\FileEditor\Search\Iterator\MetadataWrapperInterface[]
-     *   An array of matching lines, each inside a metadata wrapper.
+     * {@inheritdoc}
      */
     public function retrieveAndOrder(): array
     {
         $results = [];
+        $this->registerBuiltInMetadataGetters();
         $iterator = $this->getIterator();
 
         foreach ($iterator as $line => $object) {
@@ -85,33 +95,18 @@ class Search implements ConditionGroupInterface
     }
 
     /**
-     * Adds a new criteria to order the results by a specified property.
-     *
-     * @param array|string $property
-     *   The property to order by.
-     * @param string $direction
-     *   Ascending or descending.
-     *
-     * @return AdinanCenci\FileEditor\Search\Search
-     *   Returns itself.
+     * {@inheritdoc}
      */
-    public function orderBy(mixed $property, string $direction = 'ASC'): Search
+    public function orderBy(mixed $property, string $direction = 'ASC'): SearchInterface
     {
         $this->order->orderBy($property, $direction);
         return $this;
     }
 
     /**
-     * Adds a new criteria to order the results randomly.
-     *
-     * @param null|string $seed
-     *   If informed, the seed will be used to order the results.
-     *   The items will be order the same every time.
-     *
-     * @return AdinanCenci\FileEditor\Search\Search
-     *   Return itself.
+     * {@inheritdoc}
      */
-    public function orderRandomly(?string $seed = null): Search
+    public function orderRandomly(?string $seed = null): SearchInterface
     {
         $this->order->orderRandomly($seed);
         return $this;
@@ -151,13 +146,65 @@ class Search implements ConditionGroupInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function accumulateProperties(array &$properties = []): void
+    {
+        $this->mainConditionGroup->accumulateProperties($properties);
+        $this->order->accumulateProperties($properties);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setMetadataEagerGetter(string $property, mixed $callable): SearchInterface
+    {
+        $this->metadataEagerGetters[$property] = $callable;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setMetadataLazyGetter(string $property, mixed $callable): SearchInterface
+    {
+        $this->metadataLazyGetters[$property] = $callable;
+        return $this;
+    }
+
+    /**
      * Instantiate an iterator object.
      *
-     * @return AdinanCenci\FileEditor\Search\Iterator\MetadataIterator
+     * @return AdinanCenci\FileEditor\Search\Iterator\DataIterator
      *   The iterator object.
      */
     protected function getIterator(): \Iterator
     {
-        return new MetadataIterator($this->file->fileName);
+        return new DataIterator($this->file->filename, $this->metadataEagerGetters, $this->metadataLazyGetters);
+    }
+
+    /**
+     * Registers built-in metadata getters.
+     *
+     * Also serves as example of how to use them.
+     */
+    protected function registerBuiltInMetadataGetters(): void
+    {
+        $properties = [];
+        $this->accumulateProperties($properties);
+
+        if (in_array(['@metadata', 'length'], $properties)) {
+            $this->setMetadataEagerGetter('length', function ($iterator, $dataWrapper) {
+                return $iterator->currentContent
+                    ? strlen(rtrim($iterator->currentContent, "\n"))
+                    : 0;
+            });
+        }
+
+        if (in_array(['@metadata', 'lineNumber'], $properties)) {
+            $this->setMetadataEagerGetter('lineNumber', function ($iterator, $dataWrapper) {
+                return $iterator->currentLine;
+            });
+        }
     }
 }

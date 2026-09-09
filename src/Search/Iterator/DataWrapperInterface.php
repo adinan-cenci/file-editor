@@ -5,7 +5,7 @@ namespace AdinanCenci\FileEditor\Search\Iterator;
 /**
  * Wrapper to extract metadata from the lines.
  */
-interface MetadataWrapperInterface
+interface DataWrapperInterface
 {
     public function __get(string $propertyName);
 

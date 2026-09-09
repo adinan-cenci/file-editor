@@ -10,10 +10,10 @@ final class SetTest extends Base
 {
     public function testSetSingleLine()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        $this->resetTest($fileName);
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($filename);
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $file->setLine(9, 'Elvenking');
 
         $nine = $file->getLine(9);
@@ -22,10 +22,10 @@ final class SetTest extends Base
 
     public function testSetMultipleLines()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        $this->resetTest($fileName);
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($filename);
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $file->setLines([5 => 'Vis Mystica', 8 => 'Hammer King'], false);
 
         $lines = $file->getLines([5, 8]);
@@ -34,10 +34,10 @@ final class SetTest extends Base
 
     public function testSetPastEndOfTheFile()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        $this->resetTest($fileName);
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($filename);
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $file->setLine(25, 'Elvenking');
 
         $lastLine = $file->getLine(25);
@@ -46,12 +46,12 @@ final class SetTest extends Base
 
     public function testCreateFileFromScratch()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        if (file_exists($fileName)) {
-            unlink($fileName);
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        if (file_exists($filename)) {
+            unlink($filename);
         }
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $file->setLine(0, 'Elvenking');
 
         $firstLine = $file->getLine(0);

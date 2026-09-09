@@ -10,10 +10,10 @@ final class CountLinesTest extends Base
 {
     public function testCountNumberOfLinesInAFile()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        $this->resetTest($fileName, './tests/template-2.txt');
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($filename, './tests/template-2.txt');
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $numberOfLines = $file->countLines();
 
         $this->assertEquals(25, $numberOfLines);
@@ -21,10 +21,10 @@ final class CountLinesTest extends Base
 
     public function testNameLastLine()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        $this->resetTest($fileName, './tests/template-2.txt');
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($filename, './tests/template-2.txt');
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $lastLine = $file->nameLastLine();
 
         $this->assertEquals(25, $lastLine);
@@ -32,19 +32,19 @@ final class CountLinesTest extends Base
 
     public function testNameLastNonEmptyLine()
     {
-        $fileName = 'tests/files/' . __FUNCTION__ . '.txt';
-        $this->resetTest($fileName, './tests/template-2.txt');
+        $filename = 'tests/files/' . __FUNCTION__ . '.txt';
+        $this->resetTest($filename, './tests/template-2.txt');
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $lastLine = $file->nameLastLine(true);
 
         $this->assertEquals(16, $lastLine);
 
 
-        $fileName = 'tests/files/' . __FUNCTION__ . '2.txt';
-        $this->resetTest($fileName, './tests/template-3.txt');
+        $filename = 'tests/files/' . __FUNCTION__ . '2.txt';
+        $this->resetTest($filename, './tests/template-3.txt');
 
-        $file = new File($fileName);
+        $file = new File($filename);
         $lastLine = $file->nameLastLine(false);
 
         $this->assertEquals(25, $lastLine);

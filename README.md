@@ -134,7 +134,7 @@ $results = $search->find();
 ### Equals operator
 
 ```php
-$search->condition('position', 10, '=');
+$search->condition(['@metadata', 'lineNumber'], 10, '=');
 // Will match the 11th line in the file.
 ```
 
@@ -171,11 +171,11 @@ It also supports "less than", "greater than", "less than or equal", "greater tha
 
 ```php
 $search
-  ->condition('position', 2022, '<')
-  ->condition('position', 1990, '>')
-  ->condition('position', 60, '<=')
-  ->condition('position', 18, '>=')
-  ->condition('length', [10, 50], 'BETWEEN');
+  ->condition(['@metadata', 'lineNumber'], 2022, '<')
+  ->condition(['@metadata', 'lineNumber'], 1990, '>')
+  ->condition(['@metadata', 'lineNumber'], 60, '<=')
+  ->condition(['@metadata', 'lineNumber'], 18, '>=')
+  ->condition(['@metadata', 'length'], [10, 50], 'BETWEEN');
 ```
 
 ### Negating conditions
@@ -186,7 +186,7 @@ You may also negate the conditions.
 $search
   ->condition('content', 'Iliad', '!=') // Different to ( case insensitive ).
   ->condition('content', ['Iliad', ' Odyssey'], 'NOT IN') // case insensitive.
-  ->condition('length', [10, 50], 'NOT BETWEEN')
+  ->condition(['@metadata', 'length'], [10, 50], 'NOT BETWEEN')
   ->condition('content', ['foo', 'bar'], 'UNLIKE');
 ```
 
@@ -199,7 +199,7 @@ By default all of the conditions must be met.
 $search = $file->search();
 $search
   ->condition('content', 'Iron Maiden', '=')
-  ->condition('position', 2000, '<');
+  ->condition(['@metadata', 'lineNumber'], 2000, '<');
 $results = $search->find();
 // Will match entries for Iron Maiden, before the line 2000.
 ```
@@ -224,11 +224,11 @@ $search = $file->search('OR');
 
 $search->andConditionGroup()
   ->condition('content', 'Angra', '=')
-  ->condition('position', 2010, '<');
+  ->condition(['@metadata', 'lineNumber'], 2010, '<');
 
 $search->andConditionGroup()
   ->condition('content', 'Almah', '=')
-  ->condition('position', 2010, '>');
+  ->condition(['@metadata', 'lineNumber'], 2010, '>');
 
 $results = $search->find();
 // Will match entries for Angra from before line 2010 OR
@@ -244,11 +244,45 @@ $search = $file->search();
 
 $search->orderBy('content', 'ASC');
 // Order search results alphabetically.
-$search->orderBY('length', 'DESC');
+$search->orderBY(['@metadata', 'length'], 'DESC');
 // Order results by the line's length decrescently .
 ```
 
+## Metadata
 
+Lastly we have metadata. Adjacent information that can be used in our search.
+
+In previous examples we used the two built-in metadata provided by the library: 
+`['@metadata', 'lineNumber']` and `['@metadata', 'length']`.
+
+Custom metadata can be defined by invoking `::setMetadataEagerGetter()` and 
+`::setMetadataLazyGetter()`, making them available to our search.
+
+Naturally, the metadata must be defined before calling `::find()`.
+
+Lazy getters are invoked as needed during evaluation in the search loop.
+
+Eager getters are invoked right away inside the search loop.
+
+Some examples:
+
+This will register the `['@metadata', 'evenLine']` metadata, allowing us to 
+filter only even lines.
+
+```php
+$search->setMetadataEagerGetter('evenLine', function ($iterator, $dataWrapper) {
+  return $iterator->currentLine == 0 || $iterator->currentLine % 2 == 0;
+});
+```
+
+Another, this will register the `['@metadata', 'wordCount']` metadata, allowing 
+us to filter by the number of words in a given line.
+
+```php
+$search->setMetadataLazyGetter('wordCount', function ($dataWrapper) {
+  return substr_count($dataWrapper->content, ' ');
+});
+```
 
 <br><br>
 

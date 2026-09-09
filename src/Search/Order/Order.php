@@ -26,7 +26,7 @@ class Order
      */
     public function orderBy(mixed $property, string $direction = 'ASC'): Order
     {
-        if (preg_match('#RAND\(([^\)]*)\)#', $property, $matches)) {
+        if (is_string($property) && preg_match('#RAND\(([^\)]*)\)#', $property, $matches)) {
             $this->orderRandomly($matches[1] ?? null);
             return $this;
         }
@@ -57,7 +57,7 @@ class Order
     /**
      * Orders the search results.
      *
-     * @param AdinanCenci\FileEditor\Search\Iterator\MetadataWrapper[] $results
+     * @param AdinanCenci\FileEditor\Search\Iterator\DataWrapper[] $results
      *   The search results to order.
      */
     public function order(array &$results)
@@ -68,6 +68,23 @@ class Order
 
         foreach ($this->criteria as $criteria) {
             uasort($results, [$criteria, 'sort']);
+        }
+    }
+
+    /**
+     * Adds the groups properties to the array and returns it.
+     *
+     * @param array $properties
+     *   Array of properties.
+     */
+    public function accumulateProperties(array &$properties = []): void
+    {
+        foreach ($this->criteria as $criterion) {
+            if (!$criterion instanceof PropertySort) {
+                continue;
+            }
+
+            $properties[] = $criterion->getPropertyPath();
         }
     }
 }
