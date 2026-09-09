@@ -255,12 +255,14 @@ Lastly we have metadata. Adjacent information that can be used in our search.
 In previous examples we used the two built-in metadata provided by the library: 
 `['@metadata', 'lineNumber']` and `['@metadata', 'length']`.
 
-Custom metadata getters can be defined before calling `::find()` by invoking 
-`::setMetadataEagerGetter()` and `::setMetadataLazyGetter()`.
+Custom metadata can be defined by invoking `::setMetadataEagerGetter()` and 
+`::setMetadataLazyGetter()`, making them available to our search.
+
+Naturally, metadata must be defined before calling `::find()`.
 
 Lazy getters are invoked as needed during evaluation in the search loop.
 
-Eager getters are always invoked during the search loop.
+Eager getters are invoked right away during the search loop.
 
 Some examples:
 
