@@ -52,6 +52,9 @@ class DataIterator extends FileIterator implements \Iterator
     /**
      * Compiles eager metadata.
      *
+     * @param AdinanCenci\FileEditor\Search\Iterator\DataWrapperInterface $dataWrapper
+     *   Data wrapper.
+     *
      * @return array
      *   Compiled metadata.
      */
