@@ -248,7 +248,7 @@ $search->orderBY(['@metadata', 'length'], 'DESC');
 // Order results by the line's length decrescently .
 ```
 
-## Metadata
+### Metadata
 
 Lastly we have metadata. Adjacent information that can be used in our search.
 
