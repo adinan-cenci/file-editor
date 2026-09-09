@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] - 2026-09-09
+
+### Changed
+- Refactored the metadata feature, breaking backward compatibiliby, giving responsibility to a new class.
+- Now metadata is accessible in search conditions through the "`@metadata`" namespace.
+- The length metadata no longer counts the line break.
+- Across the library, I normalised the variable name to "`$filename`" (lower-case).
+
+### Added
+- Now it is possible to declare custom metadata.
+
+### Removed
+- Removed the "`position`" alias for the "`lineNumber`" metadata.
+
+---
+
 ## [3.0.0] - 2025-01-27
 
 ### Added
