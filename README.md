@@ -262,7 +262,7 @@ Naturally, the metadata must be defined before calling `::find()`.
 
 Lazy getters are invoked as needed during evaluation in the search loop.
 
-Eager getters are invoked right away during the search loop.
+Eager getters are invoked right away inside the search loop.
 
 Some examples:
 
